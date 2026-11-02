@@ -9,4 +9,7 @@ El personal del colegio trabaja en un panel hecho con Django (aulas, matrícula,
 - Python y Django (panel del personal)
 - API propia con Django REST Framework (datos del portal)
 - React, Vite y Tailwind CSS (portal familiar)
-- SQLite en desarrollo local
+
+
+Desarrollado por Daniel Alejandro Ruiz Poli a.k.a noahknox
+Academia Conqueblocks / Proyecto Final de Máster (PFM)
