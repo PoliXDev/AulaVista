@@ -1,5 +1,5 @@
 """
-Configuración del proyecto ProAula.
+Configuración del proyecto AulaVista.
 
 La clave, el modo depuración y los orígenes del portal familiar se leen
 desde el .env de la raíz. Así el repositorio no guarda secretos y el

@@ -22,7 +22,7 @@ from academic.models import (
 
 
 class Command(BaseCommand):
-    help = "Crea el personal, una familia con dos hijos y datos de ejemplo."
+    help = "Crea el personal, una familia con sus hijos y datos de ejemplo."
 
     def handle(self, *args, **options):
         staff = self._usuario(
@@ -46,18 +46,34 @@ class Command(BaseCommand):
 
         tercero = self._aula("3er Grado", "A")
         quinto = self._aula("5to Grado", "B")
+        primero = self._aula("1er Grado", "A")
         ana = self._alumno("Ana", "Rivas", "MAT-2026-014", tercero, parent)
         mateo = self._alumno("Mateo", "Rivas", "MAT-2026-031", quinto, parent)
+        elena = self._alumno("Elena", "Vargas", "MAT-2026-042", primero, parent)
+        diego = self._alumno("Diego", "Navarro", "MAT-2026-055", primero, parent)
+        sofia = self._alumno("Sofía", "Herrera", "MAT-2026-063", tercero, parent)
+        hugo = self._alumno("Hugo", "Molina", "MAT-2026-071", quinto, parent)
+        valeria = self._alumno("Valeria", "Castro", "MAT-2026-088", tercero, parent)
 
         self._nota(ana, Grade.Subject.MATH, "Parcial 1", Decimal("18.5"), date(2026, 10, 8))
         self._nota(ana, Grade.Subject.LANGUAGE, "Parcial 1", Decimal("16.0"), date(2026, 10, 10))
         self._nota(mateo, Grade.Subject.SCIENCE, "Parcial 1", Decimal("14.5"), date(2026, 10, 9))
         self._nota(mateo, Grade.Subject.ENGLISH, "Oral", Decimal("19.0"), date(2026, 10, 14))
+        self._nota(elena, Grade.Subject.MATH, "Parcial 1", Decimal("17.0"), date(2026, 10, 8))
+        self._nota(diego, Grade.Subject.LANGUAGE, "Parcial 1", Decimal("15.5"), date(2026, 10, 10))
+        self._nota(sofia, Grade.Subject.SCIENCE, "Parcial 1", Decimal("18.0"), date(2026, 10, 9))
+        self._nota(hugo, Grade.Subject.HISTORY, "Parcial 1", Decimal("13.0"), date(2026, 10, 11))
+        self._nota(valeria, Grade.Subject.ENGLISH, "Oral", Decimal("16.5"), date(2026, 10, 14))
 
         self._asistencia(ana, date(2026, 10, 6), Attendance.Status.PRESENT, "")
         self._asistencia(ana, date(2026, 10, 7), Attendance.Status.LATE, "Llegó 10 minutos tarde")
         self._asistencia(mateo, date(2026, 10, 6), Attendance.Status.PRESENT, "")
         self._asistencia(mateo, date(2026, 10, 7), Attendance.Status.ABSENT, "Justificada por el padre")
+        self._asistencia(elena, date(2026, 10, 6), Attendance.Status.PRESENT, "")
+        self._asistencia(diego, date(2026, 10, 6), Attendance.Status.LATE, "")
+        self._asistencia(sofia, date(2026, 10, 6), Attendance.Status.PRESENT, "")
+        self._asistencia(hugo, date(2026, 10, 6), Attendance.Status.ABSENT, "")
+        self._asistencia(valeria, date(2026, 10, 6), Attendance.Status.PRESENT, "")
 
         self._comunicado(
             "Reunión general de familias",
@@ -89,6 +105,11 @@ class Command(BaseCommand):
             date(2026, 10, 5),
             TuitionFee.Status.PAID,
         )
+        self._mensualidad(elena, "Mensualidad octubre", Decimal("85.00"), date(2026, 10, 5), TuitionFee.Status.PAID)
+        self._mensualidad(diego, "Mensualidad octubre", Decimal("85.00"), date(2026, 10, 5), TuitionFee.Status.PAID)
+        self._mensualidad(sofia, "Mensualidad octubre", Decimal("85.00"), date(2026, 10, 5), TuitionFee.Status.PAID)
+        self._mensualidad(hugo, "Mensualidad octubre", Decimal("85.00"), date(2026, 10, 5), TuitionFee.Status.PENDING)
+        self._mensualidad(valeria, "Mensualidad octubre", Decimal("85.00"), date(2026, 10, 5), TuitionFee.Status.PENDING)
 
         self.stdout.write(self.style.SUCCESS("Datos de ejemplo listos."))
         self.stdout.write("Personal: personal / aula_staff")

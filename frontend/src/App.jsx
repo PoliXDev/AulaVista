@@ -1,15 +1,15 @@
 /**
  * Portal familiar.
  * Con token de esta pestaña carga el expediente del representante.
- * Sin token muestra el acceso. La sesión no se guarda al cerrar el navegador.
+ * Sin token muestra la portada. La sesión no se guarda al cerrar el navegador.
  */
 
 import { useEffect, useState } from "react"
-import { fetchDashboard, login, logout } from "./api.js"
 import FamilyPortal from "./FamilyPortal.jsx"
-import LoginForm from "./LoginForm.jsx"
+import Landing from "./Landing.jsx"
+import { fetchDashboard, login, logout } from "./api.js"
 
-const TOKEN_KEY = "proaula-token"
+const TOKEN_KEY = "aulavista-token"
 
 export default function App() {
   const [token, setToken] = useState(() => sessionStorage.getItem(TOKEN_KEY) || "")
@@ -101,13 +101,15 @@ export default function App() {
   }
 
   if (!token) {
-    return <LoginForm onSubmit={handleLogin} loading={loading} error={error} />
+    return <Landing onSubmit={handleLogin} loading={loading} error={error} />
   }
 
   if (loading || !dashboard) {
     return (
       <main className="min-h-screen bg-[#f8fafc] px-6 py-10 font-sans text-meadow-yale">
-        <p>{error || "Cargando el expediente…"}</p>
+        <h1 className="font-display text-2xl font-semibold">
+          {error || "Cargando el expediente…"}
+        </h1>
         {error ? (
           <button
             className="mt-4 inline-flex min-h-12 items-center rounded-xl bg-meadow-teal px-5 font-medium text-white"

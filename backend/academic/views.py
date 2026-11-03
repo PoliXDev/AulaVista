@@ -58,8 +58,9 @@ class DashboardView(StaffRequiredMixin, TemplateView):
     """
     Resumen del colegio para el personal.
 
-    Cuenta aulas, alumnos y mensualidades pendientes. No muestra el
-    expediente de una familia: eso corresponde al portal del representante.
+    Cuenta aulas, alumnos y el reparto de mensualidades pagadas y
+    pendientes. No muestra el expediente de una familia: eso corresponde
+    al portal del representante.
     """
 
     template_name = "academic/dashboard.html"
@@ -68,9 +69,20 @@ class DashboardView(StaffRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context["classroom_count"] = Classroom.objects.count()
         context["student_count"] = Student.objects.count()
-        context["pending_fees_count"] = TuitionFee.objects.filter(
-            status=TuitionFee.Status.PENDING
-        ).count()
+        tuitions_paid = TuitionFee.objects.filter(status=TuitionFee.Status.PAID).count()
+        tuitions_pending = TuitionFee.objects.filter(status=TuitionFee.Status.PENDING).count()
+        total = tuitions_paid + tuitions_pending
+        if total:
+            percent_paid = round(tuitions_paid * 100 / total)
+            percent_pending = 100 - percent_paid
+        else:
+            percent_paid = 0
+            percent_pending = 0
+        context["tuitions_paid"] = tuitions_paid
+        context["tuitions_pending"] = tuitions_pending
+        context["pending_fees_count"] = tuitions_pending
+        context["percent_paid"] = percent_paid
+        context["percent_pending"] = percent_pending
         context["announcements"] = Announcement.objects.select_related("classroom")[:5]
         return context
 

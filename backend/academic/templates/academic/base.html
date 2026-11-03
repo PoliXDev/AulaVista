@@ -1,9 +1,11 @@
 <!doctype html>
+{% load static %}
 <html lang="es">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{% block title %}ProAula{% endblock %}</title>
+    <title>{% block title %}AulaVista{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="{% static 'academic/favicon.svg' %}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -38,19 +40,20 @@
       };
     </script>
   </head>
-  <body class="min-h-screen bg-[#f8fafc] font-sans text-meadow-yale">
-    <header class="bg-meadow-yale text-white">
-      <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-4">
-        <div>
-          <p class="font-display text-xl font-semibold">ProAula</p>
-          <p class="text-sm text-meadow-lime">Panel del personal</p>
-        </div>
+  <body class="min-h-screen bg-slate-50 font-sans text-slate-900">
+    <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-3">
+        <img
+          class="h-12 w-auto"
+          src="{% static 'academic/logo-aula-vista.png' %}"
+          alt="AulaVista, sistema de gestión escolar"
+        />
         {% if user.is_authenticated %}
           <form method="post" action="{% url 'logout' %}">
             {% csrf_token %}
             <button
               type="submit"
-              class="min-h-12 rounded-xl bg-meadow-teal px-5 font-medium text-white hover:bg-meadow-bondi"
+              class="min-h-12 rounded-xl bg-teal-600 px-5 font-medium text-white hover:bg-teal-700"
             >
               Salir
             </button>
@@ -58,15 +61,15 @@
         {% endif %}
       </div>
       {% if user.is_authenticated and user.role == "STAFF" %}
-        <nav class="border-t border-white/10">
+        <nav class="border-t border-meadow-cerulean/15 bg-meadow-cerulean/10" aria-label="Secciones del panel">
           <ul class="mx-auto flex max-w-5xl flex-wrap gap-1 px-4 py-2 text-sm">
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 hover:bg-white/10" href="{% url 'dashboard' %}">Resumen</a></li>
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 hover:bg-white/10" href="{% url 'classroom_list' %}">Aulas</a></li>
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 hover:bg-white/10" href="{% url 'student_list' %}">Alumnos</a></li>
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 hover:bg-white/10" href="{% url 'grade_list' %}">Calificaciones</a></li>
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 hover:bg-white/10" href="{% url 'attendance_list' %}">Asistencia</a></li>
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 hover:bg-white/10" href="{% url 'announcement_list' %}">Comunicados</a></li>
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 hover:bg-white/10" href="{% url 'tuition_list' %}">Mensualidades</a></li>
+            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'dashboard' %}">Resumen</a></li>
+            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'classroom_list' %}">Aulas</a></li>
+            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'student_list' %}">Alumnos</a></li>
+            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'grade_list' %}">Calificaciones</a></li>
+            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'attendance_list' %}">Asistencia</a></li>
+            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'announcement_list' %}">Comunicados</a></li>
+            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'tuition_list' %}">Mensualidades</a></li>
           </ul>
         </nav>
       {% endif %}

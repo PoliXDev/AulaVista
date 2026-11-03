@@ -1,5 +1,5 @@
 """
-Modelos de dominio académico y administrativo de ProAula.
+Modelos de dominio académico y administrativo de AulaVista.
 
 Centraliza la gestión de usuarios, aulas, matrículas, evaluaciones,
 asistencia diaria, comunicados internos y control de mensualidades.

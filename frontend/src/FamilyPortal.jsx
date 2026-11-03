@@ -4,6 +4,8 @@
  * asignatura y de estado llegan ya en español desde el colegio.
  */
 
+import BrandLogo from "./BrandLogo.jsx"
+
 function formatDate(value) {
   if (!value) return ""
   // Año-mes-día, sin hora: se arma en hora local para no restar un día.
@@ -25,6 +27,23 @@ function feeClass(status) {
   return "bg-meadow-lime text-meadow-yale"
 }
 
+function SectionIcon({ children }) {
+  return (
+    <svg className="h-5 w-5 text-meadow-teal" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      {children}
+    </svg>
+  )
+}
+
+function SectionTitle({ icon, children }) {
+  return (
+    <h2 className="flex items-center gap-2 font-display text-lg font-semibold">
+      {icon}
+      {children}
+    </h2>
+  )
+}
+
 export default function FamilyPortal({
   parent,
   children,
@@ -35,15 +54,15 @@ export default function FamilyPortal({
   const child = children.find((item) => item.enrollment_code === selectedCode)
 
   return (
-    <main className="min-h-screen bg-[#f8fafc] font-sans text-meadow-yale">
-      <header className="bg-meadow-yale px-6 py-4 text-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4">
+    <div className="min-h-screen bg-[#f8fafc] font-sans text-meadow-yale">
+      <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-3">
           <div>
-            <p className="font-display text-2xl font-semibold">ProAula</p>
-            <p className="text-sm text-meadow-lime">{parent.full_name}</p>
+            <BrandLogo />
+            <p className="mt-1 text-sm text-slate-500">{parent.full_name}</p>
           </div>
           <button
-            className="inline-flex min-h-12 items-center rounded-xl bg-meadow-teal px-5 font-medium text-white hover:bg-meadow-bondi"
+            className="inline-flex min-h-12 items-center rounded-xl bg-teal-600 px-5 font-medium text-white hover:bg-teal-700"
             type="button"
             onClick={onLogout}
           >
@@ -52,40 +71,59 @@ export default function FamilyPortal({
         </div>
       </header>
 
-      <div className="mx-auto max-w-5xl px-6 py-8">
-        <div className="flex flex-wrap gap-3">
-          {children.map((item) => {
-            const active = item.enrollment_code === selectedCode
-            return (
-              <button
-                key={item.enrollment_code}
-                type="button"
-                className={
-                  active
-                    ? "inline-flex min-h-12 items-center rounded-full bg-meadow-teal px-5 font-medium text-white"
-                    : "inline-flex min-h-12 items-center rounded-full border border-meadow-willow bg-white px-5 font-medium"
-                }
-                onClick={() => onSelect(item.enrollment_code)}
-              >
-                {item.first_name} {item.last_name}
-              </button>
-            )
-          })}
-        </div>
+      <main className="mx-auto max-w-5xl px-6 py-8">
+        <nav aria-label="Hijos">
+          <ul className="flex flex-wrap gap-3">
+            {children.map((item) => {
+              const active = item.enrollment_code === selectedCode
+              return (
+                <li key={item.enrollment_code}>
+                  <button
+                    type="button"
+                    aria-pressed={active}
+                    className={
+                      active
+                        ? "inline-flex min-h-12 items-center rounded-full bg-meadow-teal px-5 font-medium text-white"
+                        : "inline-flex min-h-12 items-center rounded-full border border-meadow-willow bg-white px-5 font-medium"
+                    }
+                    onClick={() => onSelect(item.enrollment_code)}
+                  >
+                    {item.first_name} {item.last_name}
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </nav>
 
         {!child ? (
-          <p className="mt-8 rounded-2xl bg-white p-6 shadow-sm">
-            No hay alumnos asociados a esta cuenta.
-          </p>
+          <>
+            <h1 className="mt-8 font-display text-2xl font-semibold">Expediente familiar</h1>
+            <p className="mt-3 rounded-2xl bg-white p-6 text-sm shadow-sm">
+              No hay alumnos asociados a esta cuenta.
+            </p>
+          </>
         ) : (
           <>
-            <p className="mt-6 text-sm text-meadow-cerulean">
+            <h1 className="mt-6 font-display text-2xl font-semibold">
+              {child.first_name} {child.last_name}
+            </h1>
+            <p className="mt-1 text-sm text-meadow-cerulean">
               {child.classroom.name} {child.classroom.section} ·{" "}
               {child.classroom.school_year} · {child.enrollment_code}
             </p>
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <article className="rounded-2xl bg-white p-5 shadow-sm">
-                <h2 className="font-display text-lg font-semibold">Calificaciones</h2>
+                <SectionTitle
+                  icon={(
+                    <SectionIcon>
+                      <path d="M4 19.5V6.2c2.2-.8 4.6-.8 6.8 0 2.2.8 4.6.8 6.8 0 2.2-.8 4.6-.8 6.8 0V19.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                      <path d="M12 6.2V19.5" stroke="currentColor" strokeWidth="1.6" />
+                    </SectionIcon>
+                  )}
+                >
+                  Calificaciones
+                </SectionTitle>
                 {child.grades.length === 0 ? <p className="mt-3 text-sm">Sin calificaciones.</p> : null}
                 <ul className="mt-3 space-y-3">
                   {child.grades.map((grade) => (
@@ -105,7 +143,16 @@ export default function FamilyPortal({
               </article>
 
               <article className="rounded-2xl bg-white p-5 shadow-sm">
-                <h2 className="font-display text-lg font-semibold">Asistencia</h2>
+                <SectionTitle
+                  icon={(
+                    <SectionIcon>
+                      <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="1.6" />
+                      <path d="M12 8v4l2.5 2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+                    </SectionIcon>
+                  )}
+                >
+                  Asistencia
+                </SectionTitle>
                 {child.attendances.length === 0 ? <p className="mt-3 text-sm">Sin asistencias.</p> : null}
                 <ul className="mt-3 space-y-3">
                   {child.attendances.map((item) => (
@@ -120,7 +167,16 @@ export default function FamilyPortal({
               </article>
 
               <article className="rounded-2xl bg-white p-5 shadow-sm">
-                <h2 className="font-display text-lg font-semibold">Comunicados</h2>
+                <SectionTitle
+                  icon={(
+                    <SectionIcon>
+                      <path d="M5 7h14v10H5z" stroke="currentColor" strokeWidth="1.6" />
+                      <path d="M5 7l7 6 7-6" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+                    </SectionIcon>
+                  )}
+                >
+                  Comunicados
+                </SectionTitle>
                 {child.announcements.length === 0 ? <p className="mt-3 text-sm">Sin comunicados.</p> : null}
                 <ul className="mt-3 space-y-4">
                   {child.announcements.map((item) => (
@@ -134,7 +190,16 @@ export default function FamilyPortal({
               </article>
 
               <article className="rounded-2xl bg-white p-5 shadow-sm">
-                <h2 className="font-display text-lg font-semibold">Mensualidades</h2>
+                <SectionTitle
+                  icon={(
+                    <SectionIcon>
+                      <rect x="4" y="6" width="16" height="12" rx="2" stroke="currentColor" strokeWidth="1.6" />
+                      <path d="M4 10h16" stroke="currentColor" strokeWidth="1.6" />
+                    </SectionIcon>
+                  )}
+                >
+                  Mensualidades
+                </SectionTitle>
                 {child.tuition_fees.length === 0 ? <p className="mt-3 text-sm">Sin mensualidades.</p> : null}
                 <ul className="mt-3 space-y-3">
                   {child.tuition_fees.map((fee) => (
@@ -155,7 +220,7 @@ export default function FamilyPortal({
             </div>
           </>
         )}
-      </div>
-    </main>
+      </main>
+    </div>
   )
 }

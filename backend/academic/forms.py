@@ -22,8 +22,9 @@ class StyledModelForm(forms.ModelForm):
     """Borde claro, foco visible y altura cómoda en todos los controles."""
 
     control_class = (
-        "mt-1 w-full rounded-xl border border-meadow-willow bg-white px-3 py-3 "
-        "text-meadow-yale outline-none focus:border-meadow-teal"
+        "mt-1 w-full rounded-xl border border-slate-300 bg-slate-50/50 px-3 py-3 "
+        "text-slate-900 outline-none focus:border-teal-600 focus:bg-white "
+        "focus:ring-2 focus:ring-teal-600/20"
     )
 
     def __init__(self, *args, **kwargs):
