@@ -106,7 +106,7 @@ export default function App() {
 
   if (loading || !dashboard) {
     return (
-      <main className="min-h-screen bg-[#f8fafc] px-6 py-10 font-sans text-meadow-yale">
+      <main className="min-h-screen bg-gradient-to-r from-slate-50 to-[#e4eef3] px-6 py-10 font-sans text-meadow-yale">
         <h1 className="font-display text-2xl font-semibold">
           {error || "Cargando el expediente…"}
         </h1>

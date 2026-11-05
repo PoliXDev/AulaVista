@@ -1,6 +1,6 @@
 /**
  * Acceso del representante.
- * La tarjeta vive en la portada. Una credencial incorrecta no abre el expediente.
+ * Se abre desde Acceso familias. Una credencial incorrecta no abre el expediente.
  */
 
 const fieldClass =

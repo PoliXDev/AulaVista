@@ -54,7 +54,7 @@ export default function FamilyPortal({
   const child = children.find((item) => item.enrollment_code === selectedCode)
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] font-sans text-meadow-yale">
+    <div className="min-h-screen bg-gradient-to-r from-slate-50 to-[#e4eef3] font-sans text-meadow-yale">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-3">
           <div>
