@@ -126,7 +126,7 @@ export default function App() {
   return (
     <FamilyPortal
       parent={dashboard.parent}
-      children={dashboard.children}
+      students={dashboard.children}
       selectedCode={selectedCode}
       onSelect={setSelectedCode}
       onLogout={handleLogout}

@@ -2,28 +2,23 @@
  * Portada pública de AulaVista.
  * Sin token se ve el recorrido del colegio.
  * Acceso familias abre el formulario. El personal entra por el panel.
+ * heroReady adelanta el texto del hero. introDone espera al final del vídeo
+ * para el resto de las secciones.
  */
 
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { API_URL } from "./api.js"
 import BrandLogo from "./BrandLogo.jsx"
+import ClearInfoSection from "./ClearInfoSection.jsx"
+import ContactSection from "./ContactSection.jsx"
+import Hero from "./Hero.jsx"
 import LoginForm from "./LoginForm.jsx"
-
-const BACKEND_ORIGIN = API_URL
+import ModulesSection from "./ModulesSection.jsx"
 
 const ghostButton =
   "inline-flex min-h-12 items-center justify-center rounded-xl border border-slate-300 bg-white px-5 text-sm font-medium text-slate-700 hover:bg-slate-50"
 const solidButton =
   "inline-flex min-h-12 items-center justify-center rounded-xl bg-teal-600 px-5 text-sm font-medium text-white hover:bg-teal-700"
-
-const benefits = [
-  "Aulas y matrícula por curso y sección",
-  "Notas de 1 a 20",
-  "Una asistencia por alumno y fecha",
-  "Comunicados del centro y del aula",
-  "Mensualidades pagadas o pendientes",
-  "Cada familia ve solo a sus hijos",
-]
 
 const features = [
   {
@@ -57,6 +52,38 @@ export default function Landing({ onSubmit, loading, error }) {
   const [heroReady, setHeroReady] = useState(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   )
+  const [introDone, setIntroDone] = useState(
+    () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+  )
+  const [reveal, setReveal] = useState(() => {
+    const ready = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    return { title: ready, grid: ready, banner: ready, contact: ready }
+  })
+  const titleRef = useRef(null)
+  const gridRef = useRef(null)
+  const bannerRef = useRef(null)
+  const contactRef = useRef(null)
+
+  useEffect(() => {
+    if (introDone) return undefined
+    const timer = window.setTimeout(() => setIntroDone(true), 10000)
+    return () => window.clearTimeout(timer)
+  }, [introDone])
+
+  useEffect(() => {
+    if (!introDone) return undefined
+    const targets = [titleRef.current, gridRef.current, bannerRef.current, contactRef.current].filter(Boolean)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return
+        const key = entry.target.getAttribute("data-reveal")
+        setReveal((current) => (current[key] ? current : { ...current, [key]: true }))
+        observer.unobserve(entry.target)
+      })
+    }, { threshold: 0.2 })
+    targets.forEach((node) => observer.observe(node))
+    return () => observer.disconnect()
+  }, [introDone])
 
   useEffect(() => {
     if (!showVideo) return undefined
@@ -72,6 +99,11 @@ export default function Landing({ onSubmit, loading, error }) {
     if (video.duration && video.duration - video.currentTime < 2.8) {
       setHeroReady(true)
     }
+  }
+
+  function finishIntro() {
+    setHeroReady(true)
+    setIntroDone(true)
   }
 
   function openFamilyAccess(event) {
@@ -104,7 +136,7 @@ export default function Landing({ onSubmit, loading, error }) {
             <a className="hover:text-teal-700" href="#acceso" onClick={openFamilyAccess}>Acceso</a>
           </nav>
           <div className="ml-auto flex items-center gap-2">
-            <a className={ghostButton} href={`${BACKEND_ORIGIN}/acceso/`}>Panel del personal</a>
+            <a className={ghostButton} href={`${API_URL}/acceso/`}>Panel del personal</a>
             <a className={solidButton} href="#acceso" onClick={openFamilyAccess}>Acceso familias</a>
           </div>
         </div>
@@ -123,92 +155,15 @@ export default function Landing({ onSubmit, loading, error }) {
         </main>
       ) : (
         <main id="inicio">
-          <section className="relative flex min-h-[70vh] items-center overflow-hidden px-6 py-16">
-            <video
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-[2500ms] ease-out ${heroReady ? "pointer-events-none opacity-0" : "opacity-100"}`}
-              src="/video/intro.webm"
-              autoPlay
-              muted
-              playsInline
-              aria-hidden="true"
-              onTimeUpdate={fadeIntro}
-              onEnded={() => setHeroReady(true)}
-              onError={() => setHeroReady(true)}
-            />
-            <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2">
-              <div className={`transition-opacity duration-1000 ease-out ${heroReady ? "opacity-100 delay-500" : "opacity-0"}`}>
-                <p className="text-sm font-semibold uppercase tracking-wide text-teal-700">
-                  Sistema de gestión escolar
-                </p>
-                <h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-slate-900 sm:text-5xl">
-                  El centro y las familias, en una sola <span className="text-teal-600">vista</span>
-                </h1>
-                <p className="mt-4 max-w-xl text-lg text-slate-600">
-                  El personal administra el colegio. Cada familia consulta el expediente de sus hijos.
-                  Dos accesos, la misma información.
-                </p>
-              </div>
-              <img
-                className={`h-auto w-full transition-opacity duration-1000 ease-out ${heroReady ? "opacity-100 delay-1000" : "opacity-0"}`}
-                src="/images/img_computadora_hero.png"
-                alt="Panel del personal en el ordenador y portal familiar en el móvil"
-              />
-            </div>
-          </section>
-
-          <section id="modulos" className="relative overflow-hidden border-t border-slate-200/80" aria-labelledby="titulo-modulos">
-            <div
-              className="absolute inset-0 bg-cover bg-center"
-              style={{ backgroundImage: "url(/images/personal_administrativo.webp)" }}
-              aria-hidden="true"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-slate-50/90 to-[#e4eef3]/85" aria-hidden="true" />
-            <div className="relative mx-auto max-w-6xl px-6 py-20">
-              <h2 id="titulo-modulos" className="max-w-2xl font-display text-3xl font-semibold">
-                El colegio, ordenado para el personal y para las familias
-              </h2>
-              <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {benefits.map((benefit) => (
-                  <li key={benefit} className="rounded-2xl border border-white/80 bg-white/90 p-5 text-sm leading-6 text-slate-700 shadow-sm">
-                    {benefit}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </section>
-
-          <section className="px-6 pb-8 pt-36" aria-labelledby="titulo-accesos">
-            <div className="relative mx-auto max-w-5xl">
-              <div className="rounded-3xl bg-teal-600 px-8 py-10 md:min-h-56 md:py-12 md:pr-72">
-                <h2 id="titulo-accesos" className="max-w-xl font-display text-3xl font-semibold leading-tight text-white sm:text-4xl">
-                  Fortalece la gestion academica de tu institucion con AulaVista
-                </h2>
-                <p className="mt-3 max-w-xl text-teal-50">
-                  AulaVista reúne tus procesos en una plataforma que permite registrar, consultar y analiza la informacion de manera ordenada.
-                </p>
-                <div className="mt-6 flex flex-wrap gap-3">
-                  <button
-                    className="inline-flex min-h-12 items-center rounded-full border border-white px-5 text-sm font-medium text-white hover:bg-white/10"
-                    type="button"
-                  >
-                    Contacta con ventas
-                  </button>
-                  <button
-                    className="inline-flex min-h-12 items-center rounded-full bg-white px-5 text-sm font-medium text-teal-800 hover:bg-teal-50"
-                    type="button"
-                    onClick={() => setShowVideo(true)}
-                  >
-                    Demo
-                  </button>
-                </div>
-              </div>
-              <img
-                className="mx-auto mt-6 h-56 w-auto object-contain md:absolute md:bottom-0 md:right-6 md:mx-0 md:mt-0 md:h-[440px]"
-                src="/images/Estudiante.png"
-                alt="Alumna con material escolar"
-              />
-            </div>
-          </section>
+          <Hero heroReady={heroReady} onTimeUpdate={fadeIntro} onFinish={finishIntro} />
+          <ModulesSection introDone={introDone} />
+          <ClearInfoSection
+            titleRef={titleRef}
+            gridRef={gridRef}
+            bannerRef={bannerRef}
+            reveal={reveal}
+            onOpenDemo={() => setShowVideo(true)}
+          />
 
           <section className="mx-auto max-w-6xl px-6 py-20" aria-label="Módulos del colegio">
             <ul className="space-y-16">
@@ -235,6 +190,8 @@ export default function Landing({ onSubmit, loading, error }) {
               ))}
             </ul>
           </section>
+
+          <ContactSection nodeRef={contactRef} shown={reveal.contact} />
         </main>
       )}
 

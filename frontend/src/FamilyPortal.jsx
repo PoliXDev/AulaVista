@@ -46,12 +46,12 @@ function SectionTitle({ icon, children }) {
 
 export default function FamilyPortal({
   parent,
-  children,
+  students,
   selectedCode,
   onSelect,
   onLogout,
 }) {
-  const child = children.find((item) => item.enrollment_code === selectedCode)
+  const child = students.find((item) => item.enrollment_code === selectedCode)
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-slate-50 to-[#e4eef3] font-sans text-meadow-yale">
@@ -74,7 +74,7 @@ export default function FamilyPortal({
       <main className="mx-auto max-w-5xl px-6 py-8">
         <nav aria-label="Hijos">
           <ul className="flex flex-wrap gap-3">
-            {children.map((item) => {
+            {students.map((item) => {
               const active = item.enrollment_code === selectedCode
               return (
                 <li key={item.enrollment_code}>

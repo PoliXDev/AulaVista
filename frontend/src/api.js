@@ -24,9 +24,7 @@ async function request(path, { method = "GET", token, body } = {}) {
       body: body !== undefined ? JSON.stringify(body) : undefined,
     })
   } catch {
-    const error = new Error("No se pudo contactar con el colegio.")
-    error.kind = "network"
-    throw error
+    throw new Error("No se pudo contactar con el colegio.")
   }
 
   let data = null
