@@ -48,6 +48,7 @@ const features = [
 
 export default function Landing({ onSubmit, loading, error }) {
   const [showAccess, setShowAccess] = useState(Boolean(error))
+  const [activeFeature, setActiveFeature] = useState(0)
   const [showVideo, setShowVideo] = useState(false)
   const [heroReady, setHeroReady] = useState(
     () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
@@ -84,6 +85,14 @@ export default function Landing({ onSubmit, loading, error }) {
     targets.forEach((node) => observer.observe(node))
     return () => observer.disconnect()
   }, [introDone])
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return undefined
+    const timer = window.setInterval(() => {
+      setActiveFeature((current) => (current + 1) % features.length)
+    }, 4000)
+    return () => window.clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     if (!showVideo) return undefined
@@ -165,30 +174,54 @@ export default function Landing({ onSubmit, loading, error }) {
             onOpenDemo={() => setShowVideo(true)}
           />
 
-          <section className="mx-auto max-w-6xl px-6 py-20" aria-label="Módulos del colegio">
-            <ul className="space-y-16">
-              {features.map((feature, index) => (
-                <li key={feature.title}>
-                  <article className="grid items-center gap-10 lg:grid-cols-2">
-                    <figure className={`overflow-hidden rounded-3xl bg-slate-100 shadow-sm ${index % 2 ? "lg:order-2" : ""}`}>
-                      <img className="h-auto w-full object-contain" src={feature.image} alt={feature.imageAlt} />
-                    </figure>
-                    <div className={index % 2 ? "lg:order-1" : ""}>
-                      {feature.portrait ? (
-                        <img
-                          className="mb-4 h-16 w-16 rounded-full object-cover"
-                          src={feature.portrait}
-                          alt={feature.portraitAlt}
-                        />
-                      ) : null}
-                      <p className="text-sm font-semibold uppercase tracking-wide text-teal-700">{feature.lead}</p>
-                      <h3 className="mt-2 font-display text-2xl font-semibold">{feature.title}</h3>
-                      <p className="mt-4 leading-7 text-slate-600">{feature.text}</p>
-                    </div>
-                  </article>
-                </li>
-              ))}
-            </ul>
+          {/* Las fichas cambian solas cada 4 s. El scroll no elige la imagen. */}
+          <section className="relative overflow-hidden border-t border-slate-200/80" aria-label="Módulos del colegio">
+              <div className="absolute inset-0" aria-hidden="true">
+                <div
+                  className="absolute inset-0 bg-cover bg-center"
+                  style={{ backgroundImage: "url(/images/profesor.jpg)" }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-meadow-cerulean/85 to-meadow-yale/80" />
+              </div>
+              <div className="relative mx-auto max-w-6xl px-6 py-20">
+              <div className="grid items-center gap-10 lg:grid-cols-2">
+                <div>
+                  <ul className="space-y-2">
+                    {features.map((feature, index) => {
+                      const open = index === activeFeature
+                      return (
+                        <li key={feature.title} className={open ? "border-l-4 border-white pl-4" : "border-l-4 border-transparent pl-4"}>
+                          <button
+                            className="w-full py-3 text-left"
+                            type="button"
+                            aria-expanded={open}
+                            onClick={() => setActiveFeature(index)}
+                          >
+                            {feature.portrait ? (
+                              <img
+                                className="mb-3 h-14 w-14 rounded-full object-cover"
+                                src={feature.portrait}
+                                alt={feature.portraitAlt}
+                              />
+                            ) : null}
+                            <p className={`text-sm font-semibold uppercase tracking-wide ${open ? "text-white" : "text-white/50"}`}>{feature.lead}</p>
+                            <h3 className={`mt-1 font-display text-2xl font-semibold ${open ? "text-white" : "text-white/50"}`}>{feature.title}</h3>
+                          </button>
+                          <div className={`grid transition-[grid-template-rows] duration-300 ease-out ${open ? "grid-rows-[1fr]" : "grid-rows-[0fr]"}`}>
+                            <p className="overflow-hidden leading-7 text-white/90">{feature.text}</p>
+                          </div>
+                        </li>
+                      )
+                    })}
+                  </ul>
+                </div>
+                <img
+                  className="h-auto w-full object-contain"
+                  src={features[activeFeature].image}
+                  alt={features[activeFeature].imageAlt}
+                />
+              </div>
+              </div>
           </section>
 
           <ContactSection nodeRef={contactRef} shown={reveal.contact} />
@@ -221,10 +254,9 @@ export default function Landing({ onSubmit, loading, error }) {
         </div>
       ) : null}
 
-      <footer className="border-t border-slate-200 px-6 py-8 text-center text-sm text-slate-600">
-        <p className="font-display text-base font-semibold text-slate-900">AulaVista</p>
-        <p className="mt-1">Gestión del centro y expediente familiar.</p>
-        <p className="mt-1">El panel del personal y el portal familiar no comparten sesión.</p>
+      <footer className="bg-gradient-to-r from-meadow-cerulean to-meadow-yale px-6 py-10 text-center text-white">
+        <p className="font-display text-lg font-semibold">AulaVista</p>
+        <p className="mt-2 text-sm text-white/80">{new Date().getFullYear()} · Proyecto Conquerblocks</p>
       </footer>
     </div>
   )
