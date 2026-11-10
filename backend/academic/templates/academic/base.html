@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block title %}AulaVista{% endblock %}</title>
-    <link rel="icon" type="image/svg+xml" href="{% static 'academic/favicon.svg' %}" />
+    <link rel="icon" type="image/png" href="{% static 'academic/favicon.png' %}" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -40,16 +40,21 @@
       };
     </script>
   </head>
-  <body class="min-h-screen bg-gradient-to-r from-slate-50 to-[#e4eef3] font-sans text-slate-900">
-    <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-3">
-        <img
-          class="h-12 w-auto"
-          src="{% static 'academic/logo-aula-vista.png' %}"
-          alt="AulaVista, sistema de gestión escolar"
-        />
+  <body class="flex min-h-screen flex-col font-sans text-slate-900 {% block body_bg %}bg-gradient-to-r from-slate-50 to-[#e4eef3]{% endblock %}">
+    <header class="{% block header_class %}sticky top-0 z-30 border-b border-meadow-yale bg-gradient-to-r from-slate-50 to-[#e4eef3]{% endblock %}">
+      <div class="mx-auto grid max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 py-3">
+        <a class="justify-self-start" href="{{ portal_origin }}/">
+          <img
+            class="h-12 w-auto"
+            src="{% static 'academic/logo-aula-vista.png' %}"
+            alt="AulaVista, sistema de gestión escolar"
+          />
+        </a>
+        <p class="hidden text-center text-sm font-semibold text-meadow-yale sm:block">
+          Panel del personal
+        </p>
         {% if user.is_authenticated %}
-          <form method="post" action="{% url 'logout' %}">
+          <form class="justify-self-end" method="post" action="{% url 'logout' %}">
             {% csrf_token %}
             <button
               type="submit"
@@ -58,23 +63,67 @@
               Salir
             </button>
           </form>
+        {% else %}
+          <span class="justify-self-end"></span>
         {% endif %}
       </div>
       {% if user.is_authenticated and user.role == "STAFF" %}
-        <nav class="border-t border-meadow-cerulean/15 bg-meadow-cerulean/10" aria-label="Secciones del panel">
-          <ul class="mx-auto flex max-w-5xl flex-wrap gap-1 px-4 py-2 text-sm">
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'dashboard' %}">Resumen</a></li>
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'classroom_list' %}">Aulas</a></li>
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'student_list' %}">Alumnos</a></li>
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'grade_list' %}">Calificaciones</a></li>
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'attendance_list' %}">Asistencia</a></li>
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'announcement_list' %}">Comunicados</a></li>
-            <li><a class="inline-flex min-h-12 items-center rounded-full px-3 text-slate-700 hover:bg-white/80" href="{% url 'tuition_list' %}">Mensualidades</a></li>
+        <nav class="border-t border-meadow-yale/30" aria-label="Secciones del panel">
+          <ul class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-1 px-4 py-2 text-sm">
+            <li>
+              <a
+                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if request.resolver_match.url_name == 'dashboard' %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                href="{% url 'dashboard' %}"
+                {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}
+              >Resumen del centro</a>
+            </li>
+            <li>
+              <a
+                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if 'classroom' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                href="{% url 'classroom_list' %}"
+                {% if 'classroom' in request.resolver_match.url_name %}aria-current="page"{% endif %}
+              >Aulas y secciones</a>
+            </li>
+            <li>
+              <a
+                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if 'student' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                href="{% url 'student_list' %}"
+                {% if 'student' in request.resolver_match.url_name %}aria-current="page"{% endif %}
+              >Matrícula</a>
+            </li>
+            <li>
+              <a
+                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if 'grade' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                href="{% url 'grade_list' %}"
+                {% if 'grade' in request.resolver_match.url_name %}aria-current="page"{% endif %}
+              >Notas del curso</a>
+            </li>
+            <li>
+              <a
+                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if 'attendance' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                href="{% url 'attendance_list' %}"
+                {% if 'attendance' in request.resolver_match.url_name %}aria-current="page"{% endif %}
+              >Partes de asistencia</a>
+            </li>
+            <li>
+              <a
+                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if 'announcement' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                href="{% url 'announcement_list' %}"
+                {% if 'announcement' in request.resolver_match.url_name %}aria-current="page"{% endif %}
+              >Comunicados</a>
+            </li>
+            <li>
+              <a
+                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if 'tuition' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                href="{% url 'tuition_list' %}"
+                {% if 'tuition' in request.resolver_match.url_name %}aria-current="page"{% endif %}
+              >Mensualidades</a>
+            </li>
           </ul>
         </nav>
       {% endif %}
     </header>
-    <main class="mx-auto max-w-5xl px-6 py-8">
+    <main class="{% block main_class %}mx-auto w-full max-w-5xl flex-1 px-6 py-8{% endblock %}">
       {% if messages %}
         <ul class="mb-6 space-y-2">
           {% for message in messages %}
@@ -84,5 +133,9 @@
       {% endif %}
       {% block content %}{% endblock %}
     </main>
+    <footer class="bg-gradient-to-r from-meadow-cerulean to-meadow-yale px-6 py-10 text-center text-white">
+      <p class="font-display text-lg font-semibold">AulaVista</p>
+      <p class="mt-2 text-sm text-white/80">{% now "Y" %} · Proyecto Conquerblocks</p>
+    </footer>
   </body>
 </html>

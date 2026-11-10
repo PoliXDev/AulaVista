@@ -78,6 +78,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 # Hace falta para el {% csrf_token %} del login y del cierre de sesión.
                 'django.template.context_processors.csrf',
+                'academic.context.portal_origin',
             ],
         },
     },

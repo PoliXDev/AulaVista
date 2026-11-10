@@ -2,6 +2,7 @@
  * Entrada de la portada.
  * El vídeo ocupa el hero y se apaga cuando heroReady pasa a verdadero,
  * unos segundos antes del final, para que el texto no espere al último fotograma.
+ * Abajo, una máscara del mismo degradado de la página funde el vídeo con el fondo.
  */
 
 export default function Hero({ heroReady, onTimeUpdate, onFinish }) {
@@ -17,6 +18,10 @@ export default function Hero({ heroReady, onTimeUpdate, onFinish }) {
         onTimeUpdate={onTimeUpdate}
         onEnded={onFinish}
         onError={onFinish}
+      />
+      <div
+        className={`pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-48 bg-gradient-to-r from-slate-50 to-[#e4eef3] transition-opacity duration-[2500ms] ease-out [mask-image:linear-gradient(to_top,black,transparent)] ${heroReady ? "opacity-0" : "opacity-100"}`}
+        aria-hidden="true"
       />
       <div className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-10 lg:grid-cols-2">
         <div className={`transition-opacity duration-1000 ease-out ${heroReady ? "opacity-100 delay-500" : "opacity-0"}`}>

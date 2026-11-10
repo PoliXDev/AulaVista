@@ -4,15 +4,13 @@
  * y solo después de que el vídeo de entrada haya terminado.
  */
 
-import { FiBookOpen, FiCalendar, FiCreditCard, FiEdit3, FiMail, FiUsers } from "react-icons/fi"
+import { FiBookOpen, FiCalendar, FiCreditCard, FiMail } from "react-icons/fi"
 
 const benefits = [
   { text: "Aulas y matrícula por curso y sección", icon: FiBookOpen },
-  { text: "Notas de 1 a 20", icon: FiEdit3 },
   { text: "Una asistencia por alumno y fecha", icon: FiCalendar },
   { text: "Comunicados del centro y del aula", icon: FiMail },
   { text: "Mensualidades pagadas o pendientes", icon: FiCreditCard },
-  { text: "Cada familia ve solo a sus hijos", icon: FiUsers },
 ]
 
 export default function ClearInfoSection({ titleRef, gridRef, bannerRef, reveal, onOpenDemo }) {
@@ -34,8 +32,8 @@ export default function ClearInfoSection({ titleRef, gridRef, bannerRef, reveal,
         </h2>
         <div ref={gridRef} data-reveal="grid" className="mt-12 grid items-center gap-10 lg:grid-cols-2">
           <img
-            className={`mx-auto h-auto w-[70%] object-contain transition-opacity duration-1000 ease-out ${reveal.grid ? "opacity-100" : "opacity-0"}`}
-            src="/images/Tableta%20AulaVista.png"
+            className={`mx-auto h-auto w-[70%] object-contain transition-opacity duration-[1500ms] ease-out ${reveal.grid ? "opacity-100" : "opacity-0"}`}
+            src="/images/tableta-aulavista.png"
             alt="Resumen del colegio en una tableta"
           />
           <ul className="grid gap-4 sm:grid-cols-2">
@@ -44,8 +42,8 @@ export default function ClearInfoSection({ titleRef, gridRef, bannerRef, reveal,
               return (
                 <li
                   key={benefit.text}
-                  className={`flex items-center gap-3 rounded-2xl border border-teal-500 bg-white px-4 py-3 text-sm leading-5 text-slate-700 shadow-sm transition-opacity duration-700 ease-out ${reveal.grid ? "opacity-100" : "opacity-0"}`}
-                  style={{ transitionDelay: reveal.grid ? `${200 + index * 120}ms` : "0ms" }}
+                  className={`flex items-center gap-3 rounded-2xl border border-teal-500 bg-white px-4 py-3 text-sm leading-5 text-slate-700 shadow-sm transition-opacity duration-1000 ease-out ${reveal.grid ? "opacity-100" : "opacity-0"}`}
+                  style={{ transitionDelay: reveal.grid ? `${280 + index * 160}ms` : "0ms" }}
                 >
                   <Icon className="h-5 w-5 shrink-0 text-teal-600" aria-hidden="true" />
                   {benefit.text}
@@ -80,7 +78,7 @@ export default function ClearInfoSection({ titleRef, gridRef, bannerRef, reveal,
           </div>
         </div>
         <img
-          className={`mx-auto mt-6 h-56 w-auto object-contain transition-opacity duration-1000 ease-out md:absolute md:bottom-0 md:right-6 md:mx-0 md:mt-0 md:h-[440px] ${reveal.banner ? "opacity-100 delay-500" : "opacity-0"}`}
+          className={`mx-auto mt-6 h-56 w-auto object-contain transition-opacity duration-[1500ms] ease-out md:absolute md:bottom-0 md:right-6 md:mx-0 md:mt-0 md:h-[440px] ${reveal.banner ? "opacity-100 delay-700" : "opacity-0"}`}
           src="/images/Estudiante.png"
           alt="Alumna con material escolar"
         />

@@ -14,14 +14,15 @@ export default function LoginForm({ onSubmit, loading, error }) {
   }
 
   return (
-    <section className="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-xl">
-      <h2 className="font-display text-2xl font-semibold text-slate-900">Acceso de familias</h2>
-      <p className="mt-1 text-sm text-slate-500">Sistema de gestión escolar</p>
+    <section className="w-full rounded-3xl border border-meadow-cerulean/40 bg-white/95 p-8 shadow-xl backdrop-blur-sm">
+      <div className="text-center">
+        <img className="mx-auto h-14 w-14 object-contain" src="/favicon.png" alt="" aria-hidden="true" />
+        <h2 className="mt-4 font-display text-2xl font-semibold text-slate-900">Acceso de familias</h2>
+        <p className="mt-1 text-sm text-meadow-cerulean">Sistema de gestión escolar</p>
+      </div>
       <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
-        <div>
-          <label className="block text-sm font-medium text-slate-700" htmlFor="portal-username">
-            Usuario
-          </label>
+        <label className="block text-sm font-medium text-slate-700" htmlFor="portal-username">
+          Usuario
           <input
             className={fieldClass}
             id="portal-username"
@@ -29,11 +30,9 @@ export default function LoginForm({ onSubmit, loading, error }) {
             autoComplete="username"
             required
           />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-700" htmlFor="portal-password">
-            Contraseña
-          </label>
+        </label>
+        <label className="block text-sm font-medium text-slate-700" htmlFor="portal-password">
+          Contraseña
           <input
             className={fieldClass}
             id="portal-password"
@@ -42,7 +41,7 @@ export default function LoginForm({ onSubmit, loading, error }) {
             autoComplete="current-password"
             required
           />
-        </div>
+        </label>
         {error ? (
           <p className="text-sm font-medium text-red-700" role="alert">
             {error}

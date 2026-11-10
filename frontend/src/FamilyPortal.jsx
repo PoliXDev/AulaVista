@@ -57,10 +57,7 @@ export default function FamilyPortal({
     <div className="min-h-screen bg-gradient-to-r from-slate-50 to-[#e4eef3] font-sans text-meadow-yale">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-3">
-          <div>
-            <BrandLogo />
-            <p className="mt-1 text-sm text-slate-500">{parent.full_name}</p>
-          </div>
+          <BrandLogo />
           <button
             className="inline-flex min-h-12 items-center rounded-xl bg-teal-600 px-5 font-medium text-white hover:bg-teal-700"
             type="button"
@@ -72,6 +69,10 @@ export default function FamilyPortal({
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-8">
+        <p className="mb-6 inline-flex items-center gap-2 rounded-2xl border border-meadow-cerulean/40 bg-white px-5 py-3 text-sm shadow-md">
+          <span className="text-meadow-cerulean">Representante</span>
+          <span className="font-semibold">{parent.full_name}</span>
+        </p>
         <nav aria-label="Hijos">
           <ul className="flex flex-wrap gap-3">
             {students.map((item) => {
@@ -99,7 +100,7 @@ export default function FamilyPortal({
         {!child ? (
           <>
             <h1 className="mt-8 font-display text-2xl font-semibold">Expediente familiar</h1>
-            <p className="mt-3 rounded-2xl bg-white p-6 text-sm shadow-sm">
+            <p className="mt-3 rounded-2xl border border-meadow-cerulean/40 bg-white p-6 text-sm shadow-md">
               No hay alumnos asociados a esta cuenta.
             </p>
           </>
@@ -113,7 +114,7 @@ export default function FamilyPortal({
               {child.classroom.school_year} · {child.enrollment_code}
             </p>
             <div className="mt-4 grid gap-4 md:grid-cols-2">
-              <article className="rounded-2xl bg-white p-5 shadow-sm">
+              <article className="rounded-2xl border border-meadow-cerulean/40 bg-white p-5 shadow-md">
                 <SectionTitle
                   icon={(
                     <SectionIcon>
@@ -142,7 +143,7 @@ export default function FamilyPortal({
                 </ul>
               </article>
 
-              <article className="rounded-2xl bg-white p-5 shadow-sm">
+              <article className="rounded-2xl border border-meadow-cerulean/40 bg-white p-5 shadow-md">
                 <SectionTitle
                   icon={(
                     <SectionIcon>
@@ -166,7 +167,7 @@ export default function FamilyPortal({
                 </ul>
               </article>
 
-              <article className="rounded-2xl bg-white p-5 shadow-sm">
+              <article className="rounded-2xl border border-meadow-cerulean/40 bg-white p-5 shadow-md">
                 <SectionTitle
                   icon={(
                     <SectionIcon>
@@ -189,7 +190,7 @@ export default function FamilyPortal({
                 </ul>
               </article>
 
-              <article className="rounded-2xl bg-white p-5 shadow-sm">
+              <article className="rounded-2xl border border-meadow-cerulean/40 bg-white p-5 shadow-md">
                 <SectionTitle
                   icon={(
                     <SectionIcon>

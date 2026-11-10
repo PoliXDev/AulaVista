@@ -22,7 +22,7 @@ from academic.models import (
 
 
 class Command(BaseCommand):
-    help = "Crea el personal, una familia con sus hijos y datos de ejemplo."
+    help = "Crea el personal, dos familias con sus hijos y datos de ejemplo."
 
     def handle(self, *args, **options):
         staff = self._usuario(
@@ -43,15 +43,24 @@ class Command(BaseCommand):
             is_staff=False,
             phone="0412-5550199",
         )
+        parent_herrera = self._usuario(
+            username="familia2",
+            password="aula-familia2",
+            first_name="Lucía",
+            last_name="Herrera",
+            role=User.Role.PARENT,
+            is_staff=False,
+            phone="0412-5550188",
+        )
 
         tercero = self._aula("3er Grado", "A")
         quinto = self._aula("5to Grado", "B")
         primero = self._aula("1er Grado", "A")
         ana = self._alumno("Ana", "Rivas", "MAT-2026-014", tercero, parent)
         mateo = self._alumno("Mateo", "Rivas", "MAT-2026-031", quinto, parent)
-        elena = self._alumno("Elena", "Vargas", "MAT-2026-042", primero, parent)
-        diego = self._alumno("Diego", "Navarro", "MAT-2026-055", primero, parent)
-        sofia = self._alumno("Sofía", "Herrera", "MAT-2026-063", tercero, parent)
+        elena = self._alumno("Elena", "Vargas", "MAT-2026-042", primero, parent_herrera)
+        diego = self._alumno("Diego", "Navarro", "MAT-2026-055", primero, parent_herrera)
+        sofia = self._alumno("Sofía", "Herrera", "MAT-2026-063", tercero, parent_herrera)
         hugo = self._alumno("Hugo", "Molina", "MAT-2026-071", quinto, parent)
         valeria = self._alumno("Valeria", "Castro", "MAT-2026-088", tercero, parent)
 
@@ -113,7 +122,8 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("Datos de ejemplo listos."))
         self.stdout.write("Personal: personal / aula_staff")
-        self.stdout.write("Familia: familia / aula-familia")
+        self.stdout.write("Familia Rivas: familia / aula-familia")
+        self.stdout.write("Familia Herrera: familia2 / aula-familia2")
         self.stdout.write(
             f"Aulas: {Classroom.objects.count()} | "
             f"Alumnos: {Student.objects.count()} | "
@@ -138,7 +148,7 @@ class Command(BaseCommand):
         return classroom
 
     def _alumno(self, first_name, last_name, enrollment_code, classroom, parent):
-        student, _created = Student.objects.get_or_create(
+        student, created = Student.objects.get_or_create(
             enrollment_code=enrollment_code,
             defaults={
                 "first_name": first_name,
@@ -147,6 +157,11 @@ class Command(BaseCommand):
                 "parent": parent,
             },
         )
+        # Si el alumno ya existía con otro representante, se corrige.
+        # get_or_create no toca el padre en las ejecuciones siguientes.
+        if not created and student.parent_id != parent.id:
+            student.parent = parent
+            student.save(update_fields=["parent"])
         return student
 
     def _nota(self, student, subject, evaluation_name, score, day):

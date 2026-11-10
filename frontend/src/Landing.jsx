@@ -134,7 +134,7 @@ export default function Landing({ onSubmit, loading, error }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-slate-50 to-[#e4eef3] font-sans text-slate-900">
+    <div className="flex min-h-screen flex-col bg-gradient-to-r from-slate-50 to-[#e4eef3] font-sans text-slate-900">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center gap-4 px-6 py-3">
           <a href="#inicio" aria-label="Ir al inicio" onClick={showTour}>
@@ -152,18 +152,23 @@ export default function Landing({ onSubmit, loading, error }) {
       </header>
 
       {showAccess ? (
-        <main id="acceso" className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-6 py-16">
-          <LoginForm onSubmit={onSubmit} loading={loading} error={error} />
-          <button
-            className="mt-6 text-sm font-medium text-slate-600 hover:text-teal-700"
-            type="button"
-            onClick={() => setShowAccess(false)}
-          >
-            Volver al recorrido
-          </button>
+        <main id="acceso" className="relative flex flex-1 items-center justify-center overflow-hidden px-6 py-10">
+          <div className="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-meadow-cerulean/20 blur-3xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute -right-16 bottom-8 h-80 w-80 rounded-full bg-meadow-yale/15 blur-3xl" aria-hidden="true" />
+          <div className="pointer-events-none absolute left-1/2 top-1/3 h-64 w-64 -translate-x-1/2 rounded-full bg-teal-200/30 blur-3xl" aria-hidden="true" />
+          <div className="relative z-10 w-full max-w-md">
+            <LoginForm onSubmit={onSubmit} loading={loading} error={error} />
+            <button
+              className="mt-6 w-full text-center text-sm font-medium text-meadow-cerulean hover:text-teal-700"
+              type="button"
+              onClick={() => setShowAccess(false)}
+            >
+              Volver al recorrido
+            </button>
+          </div>
         </main>
       ) : (
-        <main id="inicio">
+        <main id="inicio" className="flex-1">
           <Hero heroReady={heroReady} onTimeUpdate={fadeIntro} onFinish={finishIntro} />
           <ModulesSection introDone={introDone} />
           <ClearInfoSection
