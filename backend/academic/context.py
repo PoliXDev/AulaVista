@@ -13,5 +13,5 @@ def portal_origin(request):
     if settings.CORS_ALLOWED_ORIGINS:
         origen = settings.CORS_ALLOWED_ORIGINS[0]
     else:
-        origen = "http://localhost:5173"
+        origen = "http://localhost:5180"
     return {"portal_origin": origen}

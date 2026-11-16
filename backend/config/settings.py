@@ -46,7 +46,7 @@ AUTH_USER_MODEL = 'academic.User'
 
 MIDDLEWARE = [
     # Antes de CommonMiddleware, para contestar el preflight OPTIONS
-    # del portal (http://localhost:5173) sin rechazarlo.
+    # del portal (http://localhost:5180) sin rechazarlo.
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

@@ -1,6 +1,6 @@
 /**
  * Portada pública de AulaVista.
- * Sin token se ve el recorrido del colegio.
+ * Sin token se ve la portada del colegio.
  * Acceso familias abre el formulario. El personal entra por el panel.
  * heroReady adelanta el texto del hero. introDone espera al final del vídeo
  * para el resto de las secciones.
@@ -163,7 +163,7 @@ export default function Landing({ onSubmit, loading, error }) {
               type="button"
               onClick={() => setShowAccess(false)}
             >
-              Volver al recorrido
+              Volver a la portada
             </button>
           </div>
         </main>

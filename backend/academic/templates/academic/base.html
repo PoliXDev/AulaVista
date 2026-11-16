@@ -50,9 +50,10 @@
             alt="AulaVista, sistema de gestión escolar"
           />
         </a>
-        <p class="hidden text-center text-sm font-semibold text-meadow-yale sm:block">
-          Panel del personal
-        </p>
+        <div class="hidden text-center sm:block">
+          <p class="font-display text-xl font-semibold text-meadow-yale">Colegio Los Pinos</p>
+          <p class="text-base text-meadow-cerulean">Panel Administrativo</p>
+        </div>
         {% if user.is_authenticated %}
           <form class="justify-self-end" method="post" action="{% url 'logout' %}">
             {% csrf_token %}

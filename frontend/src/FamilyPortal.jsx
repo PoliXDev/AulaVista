@@ -56,10 +56,16 @@ export default function FamilyPortal({
   return (
     <div className="min-h-screen bg-gradient-to-r from-slate-50 to-[#e4eef3] font-sans text-meadow-yale">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-3">
-          <BrandLogo />
+        <div className="mx-auto grid max-w-5xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 py-3">
+          <div className="justify-self-start">
+            <BrandLogo />
+          </div>
+          <div className="hidden text-center sm:block">
+            <p className="font-display text-xl font-semibold text-meadow-yale">Colegio Los Pinos</p>
+            <p className="text-base text-meadow-cerulean">Portal familiar</p>
+          </div>
           <button
-            className="inline-flex min-h-12 items-center rounded-xl bg-teal-600 px-5 font-medium text-white hover:bg-teal-700"
+            className="justify-self-end inline-flex min-h-12 items-center rounded-xl bg-teal-600 px-5 font-medium text-white hover:bg-teal-700"
             type="button"
             onClick={onLogout}
           >
