@@ -64,25 +64,59 @@ class Command(BaseCommand):
         hugo = self._alumno("Hugo", "Molina", "MAT-2026-071", quinto, parent)
         valeria = self._alumno("Valeria", "Castro", "MAT-2026-088", tercero, parent)
 
-        self._nota(ana, Grade.Subject.MATH, "Parcial 1", Decimal("18.5"), date(2026, 10, 8))
-        self._nota(ana, Grade.Subject.LANGUAGE, "Parcial 1", Decimal("16.0"), date(2026, 10, 10))
-        self._nota(mateo, Grade.Subject.SCIENCE, "Parcial 1", Decimal("14.5"), date(2026, 10, 9))
-        self._nota(mateo, Grade.Subject.ENGLISH, "Oral", Decimal("19.0"), date(2026, 10, 14))
-        self._nota(elena, Grade.Subject.MATH, "Parcial 1", Decimal("17.0"), date(2026, 10, 8))
-        self._nota(diego, Grade.Subject.LANGUAGE, "Parcial 1", Decimal("15.5"), date(2026, 10, 10))
-        self._nota(sofia, Grade.Subject.SCIENCE, "Parcial 1", Decimal("18.0"), date(2026, 10, 9))
-        self._nota(hugo, Grade.Subject.HISTORY, "Parcial 1", Decimal("13.0"), date(2026, 10, 11))
-        self._nota(valeria, Grade.Subject.ENGLISH, "Oral", Decimal("16.5"), date(2026, 10, 14))
+        alumnos = [ana, mateo, elena, diego, sofia, hugo, valeria]
+        # Una nota por asignatura. La misma evaluación y la misma fecha
+        # para que el parcial se lea como una semana del colegio.
+        parciales = [
+            (ana, Grade.Subject.MATH, "18.5", date(2026, 10, 8)),
+            (ana, Grade.Subject.SCIENCE, "17.5", date(2026, 10, 9)),
+            (ana, Grade.Subject.LANGUAGE, "16.0", date(2026, 10, 10)),
+            (ana, Grade.Subject.HISTORY, "17.0", date(2026, 10, 11)),
+            (ana, Grade.Subject.ENGLISH, "15.5", date(2026, 10, 14)),
+            (mateo, Grade.Subject.MATH, "15.0", date(2026, 10, 8)),
+            (mateo, Grade.Subject.SCIENCE, "14.5", date(2026, 10, 9)),
+            (mateo, Grade.Subject.LANGUAGE, "13.5", date(2026, 10, 10)),
+            (mateo, Grade.Subject.HISTORY, "14.0", date(2026, 10, 11)),
+            (mateo, Grade.Subject.ENGLISH, "19.0", date(2026, 10, 14)),
+            (elena, Grade.Subject.MATH, "17.0", date(2026, 10, 8)),
+            (elena, Grade.Subject.SCIENCE, "16.0", date(2026, 10, 9)),
+            (elena, Grade.Subject.LANGUAGE, "16.5", date(2026, 10, 10)),
+            (elena, Grade.Subject.HISTORY, "16.5", date(2026, 10, 11)),
+            (elena, Grade.Subject.ENGLISH, "15.0", date(2026, 10, 14)),
+            (diego, Grade.Subject.MATH, "14.0", date(2026, 10, 8)),
+            (diego, Grade.Subject.SCIENCE, "13.5", date(2026, 10, 9)),
+            (diego, Grade.Subject.LANGUAGE, "15.5", date(2026, 10, 10)),
+            (diego, Grade.Subject.HISTORY, "15.0", date(2026, 10, 11)),
+            (diego, Grade.Subject.ENGLISH, "14.5", date(2026, 10, 14)),
+            (sofia, Grade.Subject.MATH, "17.5", date(2026, 10, 8)),
+            (sofia, Grade.Subject.SCIENCE, "18.0", date(2026, 10, 9)),
+            (sofia, Grade.Subject.LANGUAGE, "18.0", date(2026, 10, 10)),
+            (sofia, Grade.Subject.HISTORY, "17.5", date(2026, 10, 11)),
+            (sofia, Grade.Subject.ENGLISH, "16.0", date(2026, 10, 14)),
+            (hugo, Grade.Subject.MATH, "14.0", date(2026, 10, 8)),
+            (hugo, Grade.Subject.SCIENCE, "15.0", date(2026, 10, 9)),
+            (hugo, Grade.Subject.LANGUAGE, "13.5", date(2026, 10, 10)),
+            (hugo, Grade.Subject.HISTORY, "13.0", date(2026, 10, 11)),
+            (hugo, Grade.Subject.ENGLISH, "13.0", date(2026, 10, 14)),
+            (valeria, Grade.Subject.MATH, "16.0", date(2026, 10, 8)),
+            (valeria, Grade.Subject.SCIENCE, "16.5", date(2026, 10, 9)),
+            (valeria, Grade.Subject.LANGUAGE, "15.5", date(2026, 10, 10)),
+            (valeria, Grade.Subject.HISTORY, "15.0", date(2026, 10, 11)),
+            (valeria, Grade.Subject.ENGLISH, "16.5", date(2026, 10, 14)),
+        ]
+        Grade.objects.filter(student__in=alumnos).exclude(evaluation_name="Parcial 1").delete()
+        for student, subject, score, day in parciales:
+            self._nota(student, subject, "Parcial 1", Decimal(score), day)
 
-        self._asistencia(ana, date(2026, 10, 6), Attendance.Status.PRESENT, "")
-        self._asistencia(ana, date(2026, 10, 7), Attendance.Status.LATE, "Llegó 10 minutos tarde")
-        self._asistencia(mateo, date(2026, 10, 6), Attendance.Status.PRESENT, "")
+        # El listado de ejemplo solo guarda faltas. get_or_create no
+        # quita los partes de presente de una carga anterior.
+        Attendance.objects.filter(student__in=alumnos).exclude(
+            status=Attendance.Status.ABSENT
+        ).delete()
         self._asistencia(mateo, date(2026, 10, 7), Attendance.Status.ABSENT, "Justificada por el padre")
-        self._asistencia(elena, date(2026, 10, 6), Attendance.Status.PRESENT, "")
-        self._asistencia(diego, date(2026, 10, 6), Attendance.Status.LATE, "")
-        self._asistencia(sofia, date(2026, 10, 6), Attendance.Status.PRESENT, "")
         self._asistencia(hugo, date(2026, 10, 6), Attendance.Status.ABSENT, "")
-        self._asistencia(valeria, date(2026, 10, 6), Attendance.Status.PRESENT, "")
+        self._asistencia(diego, date(2026, 10, 13), Attendance.Status.ABSENT, "Cita médica")
+        self._asistencia(valeria, date(2026, 10, 15), Attendance.Status.ABSENT, "Viaje familiar")
 
         self._comunicado(
             "Reunión general de familias",
@@ -100,25 +134,23 @@ class Command(BaseCommand):
             quinto,
         )
 
-        self._mensualidad(
-            ana,
-            "Mensualidad octubre",
-            Decimal("85.00"),
-            date(2026, 10, 5),
-            TuitionFee.Status.PENDING,
-        )
-        self._mensualidad(
-            mateo,
-            "Mensualidad octubre",
-            Decimal("85.00"),
-            date(2026, 10, 5),
-            TuitionFee.Status.PAID,
-        )
-        self._mensualidad(elena, "Mensualidad octubre", Decimal("85.00"), date(2026, 10, 5), TuitionFee.Status.PAID)
-        self._mensualidad(diego, "Mensualidad octubre", Decimal("85.00"), date(2026, 10, 5), TuitionFee.Status.PAID)
-        self._mensualidad(sofia, "Mensualidad octubre", Decimal("85.00"), date(2026, 10, 5), TuitionFee.Status.PAID)
-        self._mensualidad(hugo, "Mensualidad octubre", Decimal("85.00"), date(2026, 10, 5), TuitionFee.Status.PENDING)
-        self._mensualidad(valeria, "Mensualidad octubre", Decimal("85.00"), date(2026, 10, 5), TuitionFee.Status.PENDING)
+        deben_octubre = {ana, hugo, valeria}
+        deben_noviembre = {ana, hugo, valeria}
+        for student in alumnos:
+            octubre = (
+                TuitionFee.Status.PENDING
+                if student in deben_octubre
+                else TuitionFee.Status.PAID
+            )
+            noviembre = (
+                TuitionFee.Status.PENDING
+                if student in deben_noviembre
+                else TuitionFee.Status.PAID
+            )
+            self._mensualidad(student, "Mensualidad septiembre", Decimal("85.00"), date(2026, 9, 5), TuitionFee.Status.PAID)
+            self._mensualidad(student, "Mensualidad octubre", Decimal("85.00"), date(2026, 10, 5), octubre)
+            self._mensualidad(student, "Mensualidad noviembre", Decimal("85.00"), date(2026, 11, 5), noviembre)
+            self._mensualidad(student, "Mensualidad diciembre", Decimal("85.00"), date(2026, 12, 5), TuitionFee.Status.PENDING)
 
         self.stdout.write(self.style.SUCCESS("Datos de ejemplo listos."))
         self.stdout.write("Personal: personal / aula_staff")
