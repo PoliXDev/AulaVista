@@ -5,10 +5,12 @@ Solo un usuario autenticado con rol STAFF entra a estas pantallas.
 Un representante recibe la página de acceso restringido.
 """
 
+from urllib.parse import urlencode
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.shortcuts import get_object_or_404, redirect
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.views.generic import CreateView, ListView, TemplateView, UpdateView
 
@@ -138,13 +140,36 @@ class StudentUpdateView(StaffRequiredMixin, FormPageMixin, UpdateView):
 
 
 class GradeListView(StaffRequiredMixin, ListView):
-    """Calificaciones recientes, con el alumno y su aula ya cargados."""
+    """
+    Notas de un aula.
+
+    Sin aula elegida no se listan las de todo el colegio: la pantalla
+    es la del curso, no un histórico general.
+    """
 
     template_name = "academic/grade_list.html"
     context_object_name = "grades"
 
     def get_queryset(self):
-        return Grade.objects.select_related("student", "student__classroom")[:30]
+        try:
+            classroom_id = int(self.request.GET.get("aula", ""))
+        except ValueError:
+            return Grade.objects.none()
+        grades = Grade.objects.select_related("student", "student__classroom").filter(
+            student__classroom_id=classroom_id
+        )
+        subject = self.request.GET.get("asignatura", "")
+        if subject in Grade.Subject.values:
+            grades = grades.filter(subject=subject)
+        return grades
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["classrooms"] = Classroom.objects.all()
+        context["subjects"] = Grade.Subject.choices
+        context["aula"] = self.request.GET.get("aula", "")
+        context["asignatura"] = self.request.GET.get("asignatura", "")
+        return context
 
 
 class GradeCreateView(StaffRequiredMixin, FormPageMixin, CreateView):
@@ -195,13 +220,37 @@ class AnnouncementCreateView(StaffRequiredMixin, FormPageMixin, CreateView):
 
 
 class TuitionFeeListView(StaffRequiredMixin, ListView):
-    """Mensualidades, con el alumno ya cargado para pintar la fila."""
+    """
+    Mensualidades del colegio.
+
+    El estado y el concepto llegan por GET. Sin ellos se ven todas,
+    para no esconder un recibo recién creado.
+    """
 
     template_name = "academic/tuition_list.html"
     context_object_name = "fees"
 
     def get_queryset(self):
-        return TuitionFee.objects.select_related("student", "student__classroom")
+        fees = TuitionFee.objects.select_related("student", "student__classroom")
+        estado = self.request.GET.get("estado", "")
+        if estado in TuitionFee.Status.values:
+            fees = fees.filter(status=estado)
+        concepto = self.request.GET.get("concepto", "")
+        if concepto:
+            fees = fees.filter(concept=concepto)
+        return fees
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        concepts = []
+        for concept in TuitionFee.objects.order_by("due_date").values_list("concept", flat=True):
+            if concept not in concepts:
+                concepts.append(concept)
+        context["concepts"] = concepts
+        context["statuses"] = TuitionFee.Status.choices
+        context["estado"] = self.request.GET.get("estado", "")
+        context["concepto"] = self.request.GET.get("concepto", "")
+        return context
 
 
 class TuitionFeeCreateView(StaffRequiredMixin, FormPageMixin, CreateView):
@@ -228,4 +277,14 @@ class TuitionFeeToggleView(StaffRequiredMixin, View):
             fee.status = TuitionFee.Status.PENDING
         fee.save(update_fields=["status"])
         messages.success(request, "Estado de la mensualidad actualizado.")
-        return redirect("tuition_list")
+        params = {}
+        estado = request.POST.get("estado", "")
+        if estado in TuitionFee.Status.values:
+            params["estado"] = estado
+        concepto = request.POST.get("concepto", "")
+        if concepto:
+            params["concepto"] = concepto
+        url = reverse("tuition_list")
+        if params:
+            url = f"{url}?{urlencode(params)}"
+        return redirect(url)
