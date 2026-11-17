@@ -22,7 +22,7 @@ from academic.models import (
 
 
 class Command(BaseCommand):
-    help = "Crea el personal, dos familias con sus hijos y datos de ejemplo."
+    help = "Crea el personal, las familias de ejemplo y los datos del colegio."
 
     def handle(self, *args, **options):
         staff = self._usuario(
@@ -52,10 +52,31 @@ class Command(BaseCommand):
             is_staff=False,
             phone="0412-5550188",
         )
+        parent_torres = self._usuario(
+            username="familia3",
+            password="aula-familia3",
+            first_name="Miguel",
+            last_name="Torres",
+            role=User.Role.PARENT,
+            is_staff=False,
+            phone="0412-5550177",
+        )
+        parent_gomez = self._usuario(
+            username="familia4",
+            password="aula-familia4",
+            first_name="Patricia",
+            last_name="Gómez",
+            role=User.Role.PARENT,
+            is_staff=False,
+            phone="0414-5550166",
+        )
 
-        tercero = self._aula("3er Grado", "A")
-        quinto = self._aula("5to Grado", "B")
         primero = self._aula("1er Grado", "A")
+        segundo = self._aula("2do Grado", "A")
+        tercero = self._aula("3er Grado", "A")
+        cuarto = self._aula("4to Grado", "A")
+        quinto = self._aula("5to Grado", "B")
+        sexto = self._aula("6to Grado", "A")
         ana = self._alumno("Ana", "Rivas", "MAT-2026-014", tercero, parent)
         mateo = self._alumno("Mateo", "Rivas", "MAT-2026-031", quinto, parent)
         elena = self._alumno("Elena", "Vargas", "MAT-2026-042", primero, parent_herrera)
@@ -63,8 +84,12 @@ class Command(BaseCommand):
         sofia = self._alumno("Sofía", "Herrera", "MAT-2026-063", tercero, parent_herrera)
         hugo = self._alumno("Hugo", "Molina", "MAT-2026-071", quinto, parent)
         valeria = self._alumno("Valeria", "Castro", "MAT-2026-088", tercero, parent)
+        camila = self._alumno("Camila", "Torres", "MAT-2026-102", segundo, parent_torres)
+        tomas = self._alumno("Tomás", "Torres", "MAT-2026-118", cuarto, parent_torres)
+        martin = self._alumno("Martín", "Gómez", "MAT-2026-131", cuarto, parent_gomez)
+        isabel = self._alumno("Isabel", "Gómez", "MAT-2026-146", sexto, parent_gomez)
 
-        alumnos = [ana, mateo, elena, diego, sofia, hugo, valeria]
+        alumnos = [ana, mateo, elena, diego, sofia, hugo, valeria, camila, tomas, martin, isabel]
         # Una nota por asignatura. La misma evaluación y la misma fecha
         # para que el parcial se lea como una semana del colegio.
         parciales = [
@@ -107,6 +132,10 @@ class Command(BaseCommand):
         Grade.objects.filter(student__in=alumnos).exclude(evaluation_name="Parcial 1").delete()
         for student, subject, score, day in parciales:
             self._nota(student, subject, "Parcial 1", Decimal(score), day)
+        self._parcial(camila, ("16.5", "15.5", "17.0", "16.0", "15.0"))
+        self._parcial(tomas, ("13.5", "14.0", "13.0", "14.5", "15.5"))
+        self._parcial(martin, ("17.0", "16.5", "15.5", "16.0", "18.0"))
+        self._parcial(isabel, ("18.0", "17.5", "16.5", "18.5", "17.0"))
 
         # El listado de ejemplo solo guarda faltas. get_or_create no
         # quita los partes de presente de una carga anterior.
@@ -117,6 +146,8 @@ class Command(BaseCommand):
         self._asistencia(hugo, date(2026, 10, 6), Attendance.Status.ABSENT, "")
         self._asistencia(diego, date(2026, 10, 13), Attendance.Status.ABSENT, "Cita médica")
         self._asistencia(valeria, date(2026, 10, 15), Attendance.Status.ABSENT, "Viaje familiar")
+        self._asistencia(tomas, date(2026, 10, 9), Attendance.Status.ABSENT, "Fiebre")
+        self._asistencia(isabel, date(2026, 10, 20), Attendance.Status.ABSENT, "Justificada por la madre")
 
         self._comunicado(
             "Reunión general de familias",
@@ -133,9 +164,19 @@ class Command(BaseCommand):
             "5to Grado B presenta el examen de ciencias el jueves.",
             quinto,
         )
+        self._comunicado(
+            "Entrega de útiles",
+            "1er Grado A trae el material de lectura el lunes.",
+            primero,
+        )
+        self._comunicado(
+            "Simulacro de salida",
+            "El miércoles 12 de noviembre, a las 10:00, sale todo el colegio.",
+            None,
+        )
 
-        deben_octubre = {ana, hugo, valeria}
-        deben_noviembre = {ana, hugo, valeria}
+        deben_octubre = {ana, hugo, valeria, tomas}
+        deben_noviembre = {ana, hugo, valeria, tomas}
         for student in alumnos:
             octubre = (
                 TuitionFee.Status.PENDING
@@ -156,6 +197,8 @@ class Command(BaseCommand):
         self.stdout.write("Personal: personal / aula_staff")
         self.stdout.write("Familia Rivas: familia / aula-familia")
         self.stdout.write("Familia Herrera: familia2 / aula-familia2")
+        self.stdout.write("Familia Torres: familia3 / aula-familia3")
+        self.stdout.write("Familia Gómez: familia4 / aula-familia4")
         self.stdout.write(
             f"Aulas: {Classroom.objects.count()} | "
             f"Alumnos: {Student.objects.count()} | "
