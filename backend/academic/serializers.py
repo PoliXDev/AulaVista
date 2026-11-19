@@ -65,7 +65,15 @@ class TuitionFeeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TuitionFee
-        fields = ["concept", "amount_usd", "due_date", "status", "status_label"]
+        fields = [
+            "concept",
+            "amount_usd",
+            "due_date",
+            "status",
+            "status_label",
+            "payment_reference",
+            "paid_on",
+        ]
 
 
 class AnnouncementSerializer(serializers.ModelSerializer):

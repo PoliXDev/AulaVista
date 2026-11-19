@@ -220,6 +220,11 @@ export default function FamilyPortal({
                       <p className="text-sm">
                         {fee.amount_usd} USD · vence {formatDate(fee.due_date)}
                       </p>
+                      {fee.status === "PAID" && fee.payment_reference ? (
+                        <p className="text-sm text-meadow-cerulean">
+                          Ref. {fee.payment_reference} · {formatDate(fee.paid_on)}
+                        </p>
+                      ) : null}
                     </li>
                   ))}
                 </ul>

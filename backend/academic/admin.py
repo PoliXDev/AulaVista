@@ -78,6 +78,6 @@ class AnnouncementAdmin(admin.ModelAdmin):
 
 @admin.register(TuitionFee)
 class TuitionFeeAdmin(admin.ModelAdmin):
-    list_display = ("student", "concept", "amount_usd", "due_date", "status")
+    list_display = ("student", "concept", "amount_usd", "due_date", "status", "payment_reference", "paid_on")
     list_filter = ("status", "due_date")
     search_fields = ("concept", "student__last_name", "student__enrollment_code")

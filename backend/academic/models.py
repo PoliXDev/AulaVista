@@ -214,7 +214,7 @@ class TuitionFee(models.Model):
     Estado de cuenta y mensualidades asociadas a un alumno.
 
     Registra el concepto de cobro en divisas (USD), su fecha de vencimiento
-    y el estado administrativo del pago.
+    y el estado del pago. Al cobrarlo se guarda la referencia y el día.
     """
 
     class Status(models.TextChoices):
@@ -235,6 +235,8 @@ class TuitionFee(models.Model):
         validators=[MinValueValidator(0)],
     )
     due_date = models.DateField("vencimiento")
+    payment_reference = models.CharField("referencia de pago", max_length=40, blank=True)
+    paid_on = models.DateField("fecha de pago", null=True, blank=True)
     status = models.CharField(
         "estado",
         max_length=10,

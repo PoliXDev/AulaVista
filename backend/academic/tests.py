@@ -164,10 +164,20 @@ class PanelPersonalTests(ColegioTestCase):
         self.fee.refresh_from_db()
         self.assertEqual(self.fee.status, TuitionFee.Status.PENDING)
 
-        updated = self.client.post(self.toggle)
+        missing = self.client.post(self.toggle)
+        self.assertRedirects(missing, "/mensualidades/")
+        self.fee.refresh_from_db()
+        self.assertEqual(self.fee.status, TuitionFee.Status.PENDING)
+
+        updated = self.client.post(
+            self.toggle,
+            {"referencia": "TRF-100", "pagada_el": "2026-10-06"},
+        )
         self.assertRedirects(updated, "/mensualidades/")
         self.fee.refresh_from_db()
         self.assertEqual(self.fee.status, TuitionFee.Status.PAID)
+        self.assertEqual(self.fee.payment_reference, "TRF-100")
+        self.assertEqual(self.fee.paid_on, date(2026, 10, 6))
 
 
 class PortalFamiliarTests(ColegioTestCase):

@@ -49,14 +49,36 @@
             <td class="px-4 py-3">{{ fee.due_date }}</td>
             <td class="px-4 py-3">{{ fee.get_status_display }}</td>
             <td class="px-4 py-3">
-              <form method="post" action="{% url 'tuition_toggle' fee.pk %}">
-                {% csrf_token %}
-                {% if estado %}<input type="hidden" name="estado" value="{{ estado }}">{% endif %}
-                {% if concepto %}<input type="hidden" name="concepto" value="{{ concepto }}">{% endif %}
-                <button type="submit" class="min-h-12 rounded-xl border border-meadow-teal px-4 font-medium text-meadow-teal hover:bg-meadow-lime">
-                  {% if fee.status == "PENDING" %}Marcar pagada{% else %}Marcar pendiente{% endif %}
-                </button>
-              </form>
+              {% if fee.status == "PENDING" %}
+                <form method="post" action="{% url 'tuition_toggle' fee.pk %}" class="flex flex-wrap items-end gap-2">
+                  {% csrf_token %}
+                  {% if estado %}<input type="hidden" name="estado" value="{{ estado }}">{% endif %}
+                  {% if concepto %}<input type="hidden" name="concepto" value="{{ concepto }}">{% endif %}
+                  <label class="text-xs font-medium">
+                    Referencia
+                    <input name="referencia" required maxlength="40" class="mt-1 block min-h-12 w-36 rounded-xl border border-slate-300 px-3">
+                  </label>
+                  <label class="text-xs font-medium">
+                    Fecha
+                    <input name="pagada_el" type="date" required class="mt-1 block min-h-12 rounded-xl border border-slate-300 px-3">
+                  </label>
+                  <button type="submit" class="min-h-12 rounded-xl border border-meadow-teal px-4 font-medium text-meadow-teal hover:bg-meadow-lime">
+                    Marcar pagada
+                  </button>
+                </form>
+              {% else %}
+                {% if fee.payment_reference %}
+                  <p class="text-sm">{{ fee.payment_reference }} · {{ fee.paid_on }}</p>
+                {% endif %}
+                <form method="post" action="{% url 'tuition_toggle' fee.pk %}" class="mt-2">
+                  {% csrf_token %}
+                  {% if estado %}<input type="hidden" name="estado" value="{{ estado }}">{% endif %}
+                  {% if concepto %}<input type="hidden" name="concepto" value="{{ concepto }}">{% endif %}
+                  <button type="submit" class="min-h-12 rounded-xl border border-meadow-teal px-4 font-medium text-meadow-teal hover:bg-meadow-lime">
+                    Marcar pendiente
+                  </button>
+                </form>
+              {% endif %}
             </td>
           </tr>
         {% empty %}

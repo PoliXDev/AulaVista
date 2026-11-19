@@ -5,6 +5,7 @@ Solo un usuario autenticado con rol STAFF entra a estas pantallas.
 Un representante recibe la página de acceso restringido.
 """
 
+from datetime import date
 from urllib.parse import urlencode
 
 from django.contrib import messages
@@ -264,19 +265,35 @@ class TuitionFeeCreateView(StaffRequiredMixin, FormPageMixin, CreateView):
 
 class TuitionFeeToggleView(StaffRequiredMixin, View):
     """
-    Alterna una mensualidad entre pendiente y pagada.
+    Marca una mensualidad como pagada o la devuelve a pendiente.
 
-    Solo acepta POST. El estado nuevo lo decide el servidor, no el formulario.
+    Solo acepta POST. Para pagarla exige referencia y fecha. El estado
+    lo decide el servidor.
     """
 
     def post(self, request, pk):
         fee = get_object_or_404(TuitionFee, pk=pk)
         if fee.status == TuitionFee.Status.PENDING:
+            reference = request.POST.get("referencia", "").strip()
+            try:
+                paid_on = date.fromisoformat(request.POST.get("pagada_el", ""))
+            except ValueError:
+                paid_on = None
+            if not reference or paid_on is None:
+                messages.error(request, "Indica la referencia y la fecha del pago.")
+                return self._volver(request)
+            fee.payment_reference = reference
+            fee.paid_on = paid_on
             fee.status = TuitionFee.Status.PAID
         else:
+            fee.payment_reference = ""
+            fee.paid_on = None
             fee.status = TuitionFee.Status.PENDING
-        fee.save(update_fields=["status"])
+        fee.save(update_fields=["status", "payment_reference", "paid_on"])
         messages.success(request, "Estado de la mensualidad actualizado.")
+        return self._volver(request)
+
+    def _volver(self, request):
         params = {}
         estado = request.POST.get("estado", "")
         if estado in TuitionFee.Status.values:
