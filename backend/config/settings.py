@@ -2,8 +2,8 @@
 Configuración del proyecto AulaVista.
 
 La clave, el modo depuración y los orígenes del portal familiar se leen
-desde el .env de la raíz. Así el repositorio no guarda secretos y el
-navegador solo puede llamar a la API desde los orígenes autorizados.
+desde el entorno (archivo .env en local o variables del servicio en
+producción). El repositorio no guarda secretos.
 """
 
 import os
@@ -15,13 +15,19 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR.parent / ".env")
 
-# Sin valor por defecto: si falta el .env, Django no arranca con una clave pública.
+# Sin valor por defecto: si falta la clave, Django no arranca con una pública.
 SECRET_KEY = os.environ["SECRET_KEY"]
 
 # Si la variable no está, la depuración queda apagada.
 DEBUG = os.getenv("DEBUG", "False").strip().lower() in {"1", "true", "yes", "on"}
 
-ALLOWED_HOSTS = []
+# Vacío en local con DEBUG: Django admite localhost. En Render hay que
+# poner el host del servicio (sin https://), separado por comas.
+ALLOWED_HOSTS = [
+    host.strip()
+    for host in os.getenv("ALLOWED_HOSTS", "").split(",")
+    if host.strip()
+]
 
 
 # Application definition
@@ -46,9 +52,11 @@ AUTH_USER_MODEL = 'academic.User'
 
 MIDDLEWARE = [
     # Antes de CommonMiddleware, para contestar el preflight OPTIONS
-    # del portal (http://localhost:5180) sin rechazarlo.
+    # del portal sin rechazarlo.
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    # Sirve logo y favicon en Render sin nginx.
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -63,6 +71,17 @@ CORS_ALLOWED_ORIGINS = [
     for origen in os.getenv("CORS_ALLOWED_ORIGINS", "").split(",")
     if origen.strip()
 ]
+
+# Orígenes HTTPS del panel y del portal. Sin ellos el login POST falla
+# detrás del proxy de Render.
+CSRF_TRUSTED_ORIGINS = [
+    origen.strip()
+    for origen in os.getenv("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origen.strip()
+]
+
+# Render termina TLS y reenvía HTTP; Django debe ver la petición como HTTPS.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
 ROOT_URLCONF = 'config.urls'
 
@@ -135,6 +154,16 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STORAGES = {
+    'default': {
+        'BACKEND': 'django.core.files.storage.FileSystemStorage',
+    },
+    'staticfiles': {
+        # Compresión sin manifiesto: evita fallos si falta un archivo hasheado.
+        'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
+    },
+}
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
