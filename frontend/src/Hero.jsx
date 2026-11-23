@@ -28,10 +28,10 @@ export default function Hero({ heroReady, onTimeUpdate, onFinish }) {
           <p className="text-sm font-semibold uppercase tracking-wide text-teal-700">
             Gestión escolar y portal familiar
           </p>
-          <h1 className="mt-3 font-display text-4xl font-semibold leading-tight text-slate-900 sm:text-[2.6rem] xl:text-5xl">
+          <h1 className="mt-3 font-display text-3xl font-semibold leading-tight text-slate-900 sm:text-4xl xl:text-5xl">
             El colegio y las familias,
             <br />
-            <span className="whitespace-nowrap">
+            <span className="lg:whitespace-nowrap">
               conectados en una sola <span className="text-teal-600">vista</span>
             </span>
           </h1>
@@ -42,7 +42,7 @@ export default function Hero({ heroReady, onTimeUpdate, onFinish }) {
           </p>
         </div>
         <img
-          className={`h-auto w-[110%] max-w-none origin-center transition-opacity duration-1000 ease-out ${heroReady ? "opacity-100 delay-1000" : "opacity-0"}`}
+          className={`h-auto w-full max-w-none origin-center transition-opacity duration-1000 ease-out lg:w-[110%] ${heroReady ? "opacity-100 delay-1000" : "opacity-0"}`}
           src="/images/img_computadora_hero.png"
           alt="Panel del personal en el ordenador y portal familiar en el móvil"
         />

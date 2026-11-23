@@ -56,11 +56,11 @@ export default function FamilyPortal({
   return (
     <div className="min-h-screen bg-gradient-to-r from-slate-50 to-[#e4eef3] font-sans text-meadow-yale">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto grid max-w-5xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 py-3">
+        <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:px-6">
           <div className="justify-self-start">
             <BrandLogo />
           </div>
-          <div className="hidden text-center sm:block">
+          <div className="order-last w-full text-center sm:order-none sm:w-auto">
             <p className="font-display text-xl font-semibold text-meadow-yale">Colegio Los Pinos</p>
             <p className="text-base text-meadow-cerulean">Portal familiar</p>
           </div>

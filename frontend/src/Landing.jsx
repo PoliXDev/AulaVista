@@ -7,6 +7,7 @@
  */
 
 import { useEffect, useRef, useState } from "react"
+import { FiMenu, FiX } from "react-icons/fi"
 import { API_URL } from "./api.js"
 import BrandLogo from "./BrandLogo.jsx"
 import ClearInfoSection from "./ClearInfoSection.jsx"
@@ -48,6 +49,7 @@ const features = [
 
 export default function Landing({ onSubmit, loading, error }) {
   const [showAccess, setShowAccess] = useState(Boolean(error))
+  const [menuOpen, setMenuOpen] = useState(false)
   const [activeFeature, setActiveFeature] = useState(0)
   const [showVideo, setShowVideo] = useState(false)
   const [heroReady, setHeroReady] = useState(
@@ -117,6 +119,7 @@ export default function Landing({ onSubmit, loading, error }) {
 
   function openFamilyAccess(event) {
     event.preventDefault()
+    setMenuOpen(false)
     setShowAccess(true)
     window.setTimeout(() => {
       document.getElementById("portal-username")?.focus()
@@ -124,6 +127,7 @@ export default function Landing({ onSubmit, loading, error }) {
   }
 
   function showTour(event) {
+    setMenuOpen(false)
     if (!showAccess) return
     event.preventDefault()
     const id = event.currentTarget.getAttribute("href")?.replace("#", "")
@@ -136,7 +140,7 @@ export default function Landing({ onSubmit, loading, error }) {
   return (
     <div className="flex min-h-screen flex-col bg-gradient-to-r from-slate-50 to-[#e4eef3] font-sans text-slate-900">
       <header className="sticky top-0 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center gap-4 px-6 py-3">
+        <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 md:px-6">
           <a href="#inicio" aria-label="Ir al inicio" onClick={showTour}>
             <BrandLogo />
           </a>
@@ -144,11 +148,28 @@ export default function Landing({ onSubmit, loading, error }) {
             <a className="hover:text-teal-700" href="#modulos" onClick={showTour}>Módulos</a>
             <a className="hover:text-teal-700" href="#acceso" onClick={openFamilyAccess}>Acceso</a>
           </nav>
-          <div className="ml-auto flex items-center gap-2">
-            <a className={ghostButton} href={`${API_URL}/acceso/`}>Panel del personal</a>
+          <div className="ml-auto hidden gap-2 md:flex">
+            <a className={ghostButton} href={`${API_URL}/acceso/`}>Panel de administración</a>
             <a className={solidButton} href="#acceso" onClick={openFamilyAccess}>Acceso familias</a>
           </div>
+          <button
+            className="ml-auto inline-flex h-12 w-12 items-center justify-center rounded-xl border border-slate-300 text-slate-700 md:hidden"
+            type="button"
+            aria-expanded={menuOpen}
+            aria-controls="menu-portada"
+            aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? <FiX className="h-6 w-6" aria-hidden="true" /> : <FiMenu className="h-6 w-6" aria-hidden="true" />}
+          </button>
         </div>
+        {menuOpen && (
+          <nav id="menu-portada" className="flex flex-col gap-2 border-t border-slate-200 px-4 py-3 md:hidden" aria-label="Secciones de la portada">
+            <a className="inline-flex min-h-12 items-center text-sm font-medium text-slate-700" href="#modulos" onClick={showTour}>Módulos</a>
+            <a className={ghostButton} href={`${API_URL}/acceso/`} onClick={() => setMenuOpen(false)}>Panel de administración</a>
+            <a className={solidButton} href="#acceso" onClick={openFamilyAccess}>Acceso familias</a>
+          </nav>
+        )}
       </header>
 
       {showAccess ? (

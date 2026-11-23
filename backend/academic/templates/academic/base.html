@@ -42,7 +42,7 @@
   </head>
   <body class="flex min-h-screen flex-col font-sans text-slate-900 {% block body_bg %}bg-gradient-to-r from-slate-50 to-[#e4eef3]{% endblock %}">
     <header class="{% block header_class %}sticky top-0 z-30 border-b border-meadow-yale bg-gradient-to-r from-slate-50 to-[#e4eef3]{% endblock %}">
-      <div class="mx-auto grid max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-6 py-3">
+      <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 sm:grid sm:grid-cols-[1fr_auto_1fr] sm:px-6">
         <a class="justify-self-start" href="{{ portal_origin }}/">
           <img
             class="h-12 w-auto"
@@ -50,7 +50,7 @@
             alt="AulaVista, sistema de gestión escolar"
           />
         </a>
-        <div class="hidden text-center sm:block">
+        <div class="order-last w-full text-center sm:order-none sm:w-auto">
           <p class="font-display text-xl font-semibold text-meadow-yale">Colegio Los Pinos</p>
           <p class="text-base text-meadow-cerulean">Panel Administrativo</p>
         </div>
@@ -69,59 +69,68 @@
         {% endif %}
       </div>
       {% if user.is_authenticated and user.role == "STAFF" %}
+        {# En el teléfono las secciones van en una fila que se desplaza: el panel no pierde altura y se ve cuál está abierta. #}
         <nav class="border-t border-meadow-yale/30" aria-label="Secciones del panel">
-          <ul class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-1 px-4 py-2 text-sm">
-            <li>
+          <ul id="secciones-panel" class="mx-auto flex max-w-6xl flex-nowrap items-center gap-1 overflow-x-auto px-4 py-2 text-sm lg:flex-wrap lg:justify-center">
+            <li class="shrink-0">
               <a
-                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if request.resolver_match.url_name == 'dashboard' %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                class="inline-flex min-h-12 items-center whitespace-nowrap rounded-full px-4 font-medium {% if request.resolver_match.url_name == 'dashboard' %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
                 href="{% url 'dashboard' %}"
                 {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}
               >Resumen del centro</a>
             </li>
-            <li>
+            <li class="shrink-0">
               <a
-                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if 'classroom' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                class="inline-flex min-h-12 items-center whitespace-nowrap rounded-full px-4 font-medium {% if 'classroom' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
                 href="{% url 'classroom_list' %}"
                 {% if 'classroom' in request.resolver_match.url_name %}aria-current="page"{% endif %}
               >Aulas y secciones</a>
             </li>
-            <li>
+            <li class="shrink-0">
               <a
-                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if 'student' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                class="inline-flex min-h-12 items-center whitespace-nowrap rounded-full px-4 font-medium {% if 'student' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
                 href="{% url 'student_list' %}"
                 {% if 'student' in request.resolver_match.url_name %}aria-current="page"{% endif %}
               >Matrícula</a>
             </li>
-            <li>
+            <li class="shrink-0">
               <a
-                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if 'grade' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                class="inline-flex min-h-12 items-center whitespace-nowrap rounded-full px-4 font-medium {% if 'grade' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
                 href="{% url 'grade_list' %}"
                 {% if 'grade' in request.resolver_match.url_name %}aria-current="page"{% endif %}
               >Notas del curso</a>
             </li>
-            <li>
+            <li class="shrink-0">
               <a
-                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if 'attendance' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                class="inline-flex min-h-12 items-center whitespace-nowrap rounded-full px-4 font-medium {% if 'attendance' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
                 href="{% url 'attendance_list' %}"
                 {% if 'attendance' in request.resolver_match.url_name %}aria-current="page"{% endif %}
               >Partes de asistencia</a>
             </li>
-            <li>
+            <li class="shrink-0">
               <a
-                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if 'announcement' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                class="inline-flex min-h-12 items-center whitespace-nowrap rounded-full px-4 font-medium {% if 'announcement' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
                 href="{% url 'announcement_list' %}"
                 {% if 'announcement' in request.resolver_match.url_name %}aria-current="page"{% endif %}
               >Comunicados</a>
             </li>
-            <li>
+            <li class="shrink-0">
               <a
-                class="inline-flex min-h-12 items-center rounded-full px-4 font-medium {% if 'tuition' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
+                class="inline-flex min-h-12 items-center whitespace-nowrap rounded-full px-4 font-medium {% if 'tuition' in request.resolver_match.url_name %}bg-white text-meadow-yale shadow-sm{% else %}text-slate-700 hover:bg-white/80{% endif %}"
                 href="{% url 'tuition_list' %}"
                 {% if 'tuition' in request.resolver_match.url_name %}aria-current="page"{% endif %}
               >Mensualidades</a>
             </li>
           </ul>
         </nav>
+        <script>
+          (function () {
+            var actual = document.querySelector("#secciones-panel [aria-current='page']");
+            var lista = document.getElementById("secciones-panel");
+            if (!actual || !lista || lista.scrollWidth <= lista.clientWidth) return;
+            lista.scrollLeft = actual.offsetLeft - (lista.clientWidth - actual.offsetWidth) / 2;
+          })();
+        </script>
       {% endif %}
     </header>
     <main class="{% block main_class %}mx-auto w-full max-w-5xl flex-1 px-6 py-8{% endblock %}">

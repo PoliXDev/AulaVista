@@ -53,35 +53,37 @@ export default function ClearInfoSection({ titleRef, gridRef, bannerRef, reveal,
           </ul>
         </div>
       </div>
-      <div ref={bannerRef} data-reveal="banner" className="relative mx-auto mt-8 max-w-5xl pt-28">
-        <div className={`rounded-3xl bg-teal-600 px-8 py-10 transition-opacity duration-1000 ease-out md:min-h-56 md:py-12 md:pr-72 ${reveal.banner ? "opacity-100" : "opacity-0"}`}>
-          <h2 id="titulo-accesos" className="max-w-xl font-display text-3xl font-semibold leading-tight text-white sm:text-4xl">
-            Fortalece la gestion academica de tu institucion con AulaVista
-          </h2>
-          <p className="mt-3 max-w-xl text-teal-50">
-            AulaVista reúne tus procesos en una plataforma que permite registrar, consultar y analiza la informacion de manera ordenada.
-          </p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <a
-              className="inline-flex min-h-12 items-center rounded-full border border-white px-5 text-sm font-medium text-white hover:bg-white/10"
-              href="#contacto"
-            >
-              Contacta con ventas
-            </a>
-            <button
-              className="inline-flex min-h-12 items-center rounded-full bg-white px-5 text-sm font-medium text-teal-800 hover:bg-teal-50"
-              type="button"
-              onClick={onOpenDemo}
-            >
-              Demo
-            </button>
+      <div ref={bannerRef} data-reveal="banner" className="relative mx-auto mt-8 max-w-5xl">
+        <div className={`relative overflow-hidden rounded-3xl bg-teal-600 px-6 py-10 transition-opacity duration-1000 ease-out sm:px-8 lg:py-12 ${reveal.banner ? "opacity-100" : "opacity-0"}`}>
+          <img
+            className={`pointer-events-none absolute bottom-0 right-0 z-0 h-[88%] w-auto max-w-[78%] object-contain object-[center_bottom] transition-opacity duration-[1500ms] ease-out sm:max-w-[58%] lg:h-full lg:max-w-[40%] ${reveal.banner ? "opacity-20 delay-700" : "opacity-30"}`}
+            src="/images/Estudiante.png"
+            alt=""
+          />
+          <div className="relative z-10 max-w-xl">
+            <h2 id="titulo-accesos" className="font-display text-3xl font-semibold leading-tight text-white sm:text-4xl">
+              Fortalece la gestion academica de tu institucion con AulaVista
+            </h2>
+            <p className="mt-3 text-teal-50">
+              AulaVista reúne tus procesos en una plataforma que permite registrar, consultar y analiza la informacion de manera ordenada.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <a
+                className="inline-flex min-h-12 items-center rounded-full border border-white px-5 text-sm font-medium text-white hover:bg-white/10"
+                href="#contacto"
+              >
+                Contacta con ventas
+              </a>
+              <button
+                className="inline-flex min-h-12 items-center rounded-full bg-white px-5 text-sm font-medium text-teal-800 hover:bg-teal-50"
+                type="button"
+                onClick={onOpenDemo}
+              >
+                Demo
+              </button>
+            </div>
           </div>
         </div>
-        <img
-          className={`mx-auto mt-6 h-56 w-auto object-contain transition-opacity duration-[1500ms] ease-out md:absolute md:bottom-0 md:right-6 md:mx-0 md:mt-0 md:h-[440px] ${reveal.banner ? "opacity-100 delay-700" : "opacity-0"}`}
-          src="/images/Estudiante.png"
-          alt="Alumna con material escolar"
-        />
       </div>
     </section>
   )

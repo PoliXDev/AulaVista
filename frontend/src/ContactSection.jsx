@@ -34,9 +34,9 @@ export default function ContactSection({ nodeRef, shown }) {
       <div
         ref={nodeRef}
         data-reveal="contact"
-        className={`mx-auto max-w-3xl rounded-3xl border border-meadow-cerulean bg-slate-150 px-6 py-10 shadow-sm transition-opacity duration-1000 ease-out sm:px-10 ${shown ? "opacity-100" : "opacity-0"}`}
+        className={`mx-auto max-w-3xl rounded-3xl border border-meadow-cerulean bg-slate-300 px-6 py-10 shadow-sm transition-opacity duration-1000 ease-out sm:px-10 ${shown ? "opacity-100" : "opacity-0"}`}
       >
-        <h2 id="titulo-contacto" className="text-center font-display text-4xl font-bold leading-tight text-slate-900">
+        <h2 id="titulo-contacto" className="text-center font-display text-3xl font-bold leading-tight text-slate-900 sm:text-4xl">
           ¿Te interesa{" "}
           <span className="relative inline-block">
             mejorar

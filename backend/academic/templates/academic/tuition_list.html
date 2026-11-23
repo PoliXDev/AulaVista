@@ -28,8 +28,8 @@
     </label>
     <button type="submit" class="min-h-12 rounded-xl bg-meadow-yale px-5 font-medium text-white">Ver</button>
   </form>
-  <div class="overflow-hidden rounded-2xl bg-white shadow-sm">
-    <table class="w-full text-left text-sm">
+  <div class="overflow-x-auto rounded-2xl bg-white shadow-sm">
+    <table class="w-full min-w-[40rem] text-left text-sm">
       <thead class="bg-meadow-lime/40">
         <tr>
           <th class="px-4 py-3 font-medium">Alumno</th>
@@ -37,7 +37,7 @@
           <th class="px-4 py-3 font-medium">Importe</th>
           <th class="px-4 py-3 font-medium">Vencimiento</th>
           <th class="px-4 py-3 font-medium">Estado</th>
-          <th class="px-4 py-3 font-medium"></th>
+          <th class="min-w-[16rem] px-4 py-3 font-medium"></th>
         </tr>
       </thead>
       <tbody>
@@ -48,19 +48,19 @@
             <td class="px-4 py-3">{{ fee.amount_usd }} USD</td>
             <td class="px-4 py-3">{{ fee.due_date }}</td>
             <td class="px-4 py-3">{{ fee.get_status_display }}</td>
-            <td class="px-4 py-3">
+            <td class="min-w-[16rem] px-4 py-3">
               {% if fee.status == "PENDING" %}
-                <form method="post" action="{% url 'tuition_toggle' fee.pk %}" class="flex flex-wrap items-end gap-2">
+                <form method="post" action="{% url 'tuition_toggle' fee.pk %}" class="flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-end">
                   {% csrf_token %}
                   {% if estado %}<input type="hidden" name="estado" value="{{ estado }}">{% endif %}
                   {% if concepto %}<input type="hidden" name="concepto" value="{{ concepto }}">{% endif %}
                   <label class="text-xs font-medium">
                     Referencia
-                    <input name="referencia" required maxlength="40" class="mt-1 block min-h-12 w-36 rounded-xl border border-slate-300 px-3">
+                    <input name="referencia" required maxlength="40" class="mt-1 block min-h-12 w-full rounded-xl border border-slate-300 px-3 sm:w-36">
                   </label>
                   <label class="text-xs font-medium">
                     Fecha
-                    <input name="pagada_el" type="date" required class="mt-1 block min-h-12 rounded-xl border border-slate-300 px-3">
+                    <input name="pagada_el" type="date" required class="mt-1 block min-h-12 w-full rounded-xl border border-slate-300 px-3 sm:w-auto">
                   </label>
                   <button type="submit" class="min-h-12 rounded-xl border border-meadow-teal px-4 font-medium text-meadow-teal hover:bg-meadow-lime">
                     Marcar pagada
