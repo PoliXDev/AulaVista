@@ -90,8 +90,7 @@ class Command(BaseCommand):
         isabel = self._alumno("Isabel", "Gómez", "MAT-2026-146", sexto, parent_gomez)
 
         alumnos = [ana, mateo, elena, diego, sofia, hugo, valeria, camila, tomas, martin, isabel]
-        # Una nota por asignatura. La misma evaluación y la misma fecha
-        # para que el parcial se lea como una semana del colegio.
+     
         parciales = [
             (ana, Grade.Subject.MATH, "18.5", date(2026, 10, 8)),
             (ana, Grade.Subject.SCIENCE, "17.5", date(2026, 10, 9)),
@@ -137,8 +136,7 @@ class Command(BaseCommand):
         self._parcial(martin, ("17.0", "16.5", "15.5", "16.0", "18.0"))
         self._parcial(isabel, ("18.0", "17.5", "16.5", "18.5", "17.0"))
 
-        # El listado de ejemplo solo guarda faltas. get_or_create no
-        # quita los partes de presente de una carga anterior.
+ 
         Attendance.objects.filter(student__in=alumnos).exclude(
             status=Attendance.Status.ABSENT
         ).delete()
@@ -232,8 +230,7 @@ class Command(BaseCommand):
                 "parent": parent,
             },
         )
-        # Si el alumno ya existía con otro representante, se corrige.
-        # get_or_create no toca el padre en las ejecuciones siguientes.
+  
         if not created and student.parent_id != parent.id:
             student.parent = parent
             student.save(update_fields=["parent"])
@@ -246,6 +243,25 @@ class Command(BaseCommand):
             evaluation_name=evaluation_name,
             defaults={"score": score, "date": day},
         )
+
+    def _parcial(self, student, scores):
+        
+        subjects = (
+            Grade.Subject.MATH,
+            Grade.Subject.SCIENCE,
+            Grade.Subject.LANGUAGE,
+            Grade.Subject.HISTORY,
+            Grade.Subject.ENGLISH,
+        )
+        days = (
+            date(2026, 10, 8),
+            date(2026, 10, 9),
+            date(2026, 10, 10),
+            date(2026, 10, 11),
+            date(2026, 10, 14),
+        )
+        for subject, score, day in zip(subjects, scores, days):
+            self._nota(student, subject, "Parcial 1", Decimal(score), day)
 
     def _asistencia(self, student, day, status, notes):
         Attendance.objects.get_or_create(
