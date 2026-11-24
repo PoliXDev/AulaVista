@@ -53,10 +53,10 @@ export default function ClearInfoSection({ titleRef, gridRef, bannerRef, reveal,
           </ul>
         </div>
       </div>
-      <div ref={bannerRef} data-reveal="banner" className="relative mx-auto mt-8 max-w-5xl">
-        <div className={`relative overflow-hidden rounded-3xl bg-teal-600 px-6 py-10 transition-opacity duration-1000 ease-out sm:px-8 lg:py-12 ${reveal.banner ? "opacity-100" : "opacity-0"}`}>
+      <div ref={bannerRef} data-reveal="banner" className="relative mx-auto mt-8 max-w-5xl lg:pt-28">
+        <div className={`relative overflow-hidden rounded-3xl bg-teal-600 px-6 py-10 transition-opacity duration-1000 ease-out sm:px-8 lg:min-h-56 lg:overflow-visible lg:px-8 lg:py-12 lg:pr-72 ${reveal.banner ? "opacity-100" : "opacity-0"}`}>
           <img
-            className={`pointer-events-none absolute bottom-0 right-0 z-0 h-[88%] w-auto max-w-[78%] object-contain object-[center_bottom] transition-opacity duration-[1500ms] ease-out sm:max-w-[58%] lg:h-full lg:max-w-[40%] ${reveal.banner ? "opacity-20 delay-700" : "opacity-30"}`}
+            className={`pointer-events-none absolute bottom-0 right-0 z-0 h-[88%] w-auto max-w-[78%] object-contain object-[center_bottom] transition-opacity duration-[1500ms] ease-out sm:max-w-[58%] lg:hidden ${reveal.banner ? "opacity-20 delay-700" : "opacity-30"}`}
             src="/images/Estudiante.png"
             alt=""
           />
@@ -84,6 +84,11 @@ export default function ClearInfoSection({ titleRef, gridRef, bannerRef, reveal,
             </div>
           </div>
         </div>
+        <img
+          className={`pointer-events-none mx-auto mt-6 hidden h-56 w-auto object-contain transition-opacity duration-[1500ms] ease-out lg:absolute lg:bottom-0 lg:right-6 lg:mx-0 lg:mt-0 lg:block lg:h-[440px] ${reveal.banner ? "opacity-100 delay-700" : "opacity-0"}`}
+          src="/images/Estudiante.png"
+          alt="Alumna con material escolar"
+        />
       </div>
     </section>
   )
