@@ -83,6 +83,12 @@ CSRF_TRUSTED_ORIGINS = [
 # Render termina TLS y reenvía HTTP; Django debe ver la petición como HTTPS.
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 
+# En producción la cookie de sesión y la de CSRF solo viajan por HTTPS.
+# En local DEBUG está encendido y el panel se abre por HTTP.
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
