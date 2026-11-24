@@ -20,6 +20,21 @@ Hay dos accesos y no comparten sesión.
 - Django REST Framework, para los datos del portal
 - React, Vite y Tailwind CSS, para el portal familiar
 
+## Despliegue
+
+El portal de las familias está en [aulavista.app](https://aulavista.app). `www.aulavista.app` redirige ahí. Lo sirve Vercel, con la variable `VITE_API_URL=https://panel.aulavista.app`.
+
+El panel del personal y la API son el mismo Django, en [panel.aulavista.app](https://panel.aulavista.app). El acceso del personal es [panel.aulavista.app/acceso/](https://panel.aulavista.app/acceso/). Lo sirve Render. El servicio también responde en `aulavista-api.onrender.com`.
+
+
+| Usuario | Contraseña | Qué abre |
+| --- | --- | --- |
+| personal | aula_staff | Panel del personal |
+| familia | aula-familia | Portal, familia Rivas |
+| familia2 | aula-familia2 | Portal, familia Herrera |
+| familia3 | aula-familia3 | Portal, familia Torres |
+| familia4 | aula-familia4 | Portal, familia Gómez |
+
 Desarrollado por Daniel Ruiz / noahknox
 
 Proyecto Final de Curso Full Stack en Conqueblocks
