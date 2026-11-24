@@ -165,7 +165,7 @@ class PanelPersonalTests(ColegioTestCase):
         self.assertEqual(self.fee.status, TuitionFee.Status.PENDING)
 
         missing = self.client.post(self.toggle)
-        self.assertRedirects(missing, "/mensualidades/")
+        self.assertRedirects(missing, f"/mensualidades/?cobro={self.fee.pk}")
         self.fee.refresh_from_db()
         self.assertEqual(self.fee.status, TuitionFee.Status.PENDING)
 

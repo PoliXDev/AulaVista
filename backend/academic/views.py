@@ -251,6 +251,8 @@ class TuitionFeeListView(StaffRequiredMixin, ListView):
         context["statuses"] = TuitionFee.Status.choices
         context["estado"] = self.request.GET.get("estado", "")
         context["concepto"] = self.request.GET.get("concepto", "")
+        cobro = self.request.GET.get("cobro", "")
+        context["cobro"] = cobro if cobro.isdigit() else ""
         return context
 
 
@@ -281,7 +283,7 @@ class TuitionFeeToggleView(StaffRequiredMixin, View):
                 paid_on = None
             if not reference or paid_on is None:
                 messages.error(request, "Indica la referencia y la fecha del pago.")
-                return self._volver(request)
+                return self._volver(request, cobro=fee.pk)
             fee.payment_reference = reference
             fee.paid_on = paid_on
             fee.status = TuitionFee.Status.PAID
@@ -293,7 +295,7 @@ class TuitionFeeToggleView(StaffRequiredMixin, View):
         messages.success(request, "Estado de la mensualidad actualizado.")
         return self._volver(request)
 
-    def _volver(self, request):
+    def _volver(self, request, cobro=None):
         params = {}
         estado = request.POST.get("estado", "")
         if estado in TuitionFee.Status.values:
@@ -301,6 +303,8 @@ class TuitionFeeToggleView(StaffRequiredMixin, View):
         concepto = request.POST.get("concepto", "")
         if concepto:
             params["concepto"] = concepto
+        if cobro:
+            params["cobro"] = cobro
         url = reverse("tuition_list")
         if params:
             url = f"{url}?{urlencode(params)}"

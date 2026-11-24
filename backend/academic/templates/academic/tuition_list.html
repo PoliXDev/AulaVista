@@ -42,27 +42,32 @@
       </thead>
       <tbody>
         {% for fee in fees %}
-          <tr class="border-t border-meadow-lime">
+          <tr class="border-t border-meadow-lime {% if fee.status == 'PENDING' %}bg-amber-50{% endif %}">
             <td class="px-4 py-3">{{ fee.student }}</td>
             <td class="px-4 py-3">{{ fee.concept }}</td>
             <td class="px-4 py-3">{{ fee.amount_usd }} USD</td>
             <td class="px-4 py-3">{{ fee.due_date }}</td>
-            <td class="px-4 py-3">{{ fee.get_status_display }}</td>
+            <td class="px-4 py-3 {% if fee.status == 'PENDING' %}font-medium text-amber-800{% else %}text-emerald-800{% endif %}">{{ fee.get_status_display }}</td>
             <td class="min-w-[16rem] px-4 py-3">
               {% if fee.status == "PENDING" %}
                 <form method="post" action="{% url 'tuition_toggle' fee.pk %}" class="flex flex-col items-stretch gap-2 sm:flex-row sm:flex-wrap sm:items-end">
                   {% csrf_token %}
                   {% if estado %}<input type="hidden" name="estado" value="{{ estado }}">{% endif %}
                   {% if concepto %}<input type="hidden" name="concepto" value="{{ concepto }}">{% endif %}
-                  <label class="text-xs font-medium">
-                    Referencia
-                    <input name="referencia" required maxlength="40" class="mt-1 block min-h-12 w-full rounded-xl border border-slate-300 px-3 sm:w-36">
-                  </label>
-                  <label class="text-xs font-medium">
-                    Fecha
-                    <input name="pagada_el" type="date" required class="mt-1 block min-h-12 w-full rounded-xl border border-slate-300 px-3 sm:w-auto">
-                  </label>
-                  <button type="submit" class="min-h-12 rounded-xl border border-meadow-teal px-4 font-medium text-meadow-teal hover:bg-meadow-lime">
+                  {# La referencia y la fecha solo se piden al cobrar. Si faltan, el servidor vuelve con cobro y la fila sigue abierta. #}
+                  <div data-cobro {% if cobro != fee.pk|stringformat:"s" %}hidden{% endif %}>
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-end">
+                    <label class="text-xs font-medium">
+                      Referencia
+                      <input name="referencia" required maxlength="40" class="mt-1 block min-h-12 w-full rounded-xl border border-slate-300 px-3 sm:w-36">
+                    </label>
+                    <label class="text-xs font-medium">
+                      Fecha
+                      <input name="pagada_el" type="date" required class="mt-1 block min-h-12 w-full rounded-xl border border-slate-300 px-3 sm:w-auto">
+                    </label>
+                    </div>
+                  </div>
+                  <button type="{% if cobro == fee.pk|stringformat:'s' %}submit{% else %}button{% endif %}" data-abrir class="min-h-12 rounded-xl border border-meadow-teal px-4 font-medium text-meadow-teal hover:bg-meadow-lime">
                     Marcar pagada
                   </button>
                 </form>
@@ -87,4 +92,16 @@
       </tbody>
     </table>
   </div>
+  <script>
+    document.querySelectorAll("[data-abrir]").forEach(function (boton) {
+      boton.addEventListener("click", function () {
+        if (boton.type === "submit") return;
+        var caja = boton.form.querySelector("[data-cobro]");
+        caja.hidden = false;
+        boton.type = "submit";
+        var campo = caja.querySelector("input");
+        if (campo) campo.focus();
+      });
+    });
+  </script>
 {% endblock %}
